@@ -1,5 +1,5 @@
 {
-  "extends": "plasmo/templates/tsconfig.base",
+  "extends": "plasmo/templates/tsconfig.base.json",
   "exclude": [
     "node_modules"
   ],
@@ -9,9 +9,13 @@
     "./**/*.tsx"
   ],
   "compilerOptions": {
+    "jsx": "react",
     "paths": {
       "~*": [
         "./*"
+      ],
+      "@/*": [
+        "./src/*"
       ]
     },
     "baseUrl": "."
