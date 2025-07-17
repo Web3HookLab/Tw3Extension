@@ -130,4 +130,4 @@ bun run build
 
 **Version**: 1.0.0  
 **Author**: Web3Hook  
-**Last Updated**: 2024
+**Last Updated**: 2025
