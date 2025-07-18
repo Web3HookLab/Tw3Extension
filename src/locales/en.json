@@ -267,6 +267,8 @@
     "retry": "Retry",
     "notLoggedIn": "Please login to view Web3 analysis data",
     "loginPrompt": "Click the extension icon to login",
+    "loginRequired": "Please login first",
+    "loginRequiredDesc": "Login to view KOL analysis data",
     "userInfo": "User Information",
     "kolFollowing": "KOL Following",
     "followers": "followers",

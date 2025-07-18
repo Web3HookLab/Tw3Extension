@@ -5,20 +5,13 @@
 
 import { TwitterDataDisplayManager } from './TwitterDataDisplayManager'
 
-// 管理器实例
-let manager: TwitterDataDisplayManager | null = null
-
 /**
  * 初始化Twitter数据显示管理器
  */
-function initializeManager() {
-  if (manager) {
-    console.log('⚠️ Twitter数据显示管理器已存在，跳过初始化')
-    return
-  }
-  
+async function initializeManager() {
   try {
-    manager = new TwitterDataDisplayManager()
+    console.log('🚀 开始初始化Twitter数据显示管理器')
+    await TwitterDataDisplayManager.initialize()
     console.log('✅ Twitter数据显示管理器初始化成功')
   } catch (error) {
     console.error('❌ Twitter数据显示管理器初始化失败:', error)
@@ -29,14 +22,11 @@ function initializeManager() {
  * 清理管理器
  */
 function cleanupManager() {
-  if (manager) {
-    try {
-      manager.cleanup()
-      manager = null
-      console.log('🧹 Twitter数据显示管理器已清理')
-    } catch (error) {
-      console.error('❌ 清理Twitter数据显示管理器失败:', error)
-    }
+  try {
+    TwitterDataDisplayManager.destroy()
+    console.log('🧹 Twitter数据显示管理器已清理')
+  } catch (error) {
+    console.error('❌ 清理Twitter数据显示管理器失败:', error)
   }
 }
 
@@ -51,5 +41,5 @@ if (document.readyState === 'loading') {
 // 页面卸载时清理
 window.addEventListener('beforeunload', cleanupManager)
 
-// 导出管理器实例（用于调试）
-export { manager }
+// 导出管理器类（用于调试）
+export { TwitterDataDisplayManager }

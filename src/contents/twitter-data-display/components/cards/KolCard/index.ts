@@ -18,10 +18,19 @@ export interface KolCardProps {
  * 创建KOL卡片
  */
 export async function createKolCard(restId: string): Promise<HTMLElement | null> {
+  // 检查用户登录状态
+  const { TokenManager } = await import('~src/services/token.service')
+  const isLoggedIn = await TokenManager.isLoggedIn()
+
+  if (!isLoggedIn) {
+    console.log('⏸️ 用户未登录，跳过KOL卡片创建')
+    return null
+  }
+
   // 检查KOL列表显示设置
   const { TwitterSettingsService } = await import('../../../services/twitter-settings.service')
   const showKolListEnabled = await TwitterSettingsService.getShowKolListEnabled()
-  
+
   if (!showKolListEnabled) {
     console.log('⏸️ KOL列表显示已禁用')
     return null

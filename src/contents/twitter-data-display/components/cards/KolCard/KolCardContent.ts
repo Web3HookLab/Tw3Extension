@@ -28,6 +28,16 @@ export class KolCardContent {
    */
   static async initializeData(container: HTMLElement, restId: string, isDarkMode: boolean): Promise<void> {
     try {
+      // 检查用户登录状态
+      const { TokenManager } = await import('~src/services/token.service')
+      const isLoggedIn = await TokenManager.isLoggedIn()
+
+      if (!isLoggedIn) {
+        console.log('⏸️ 用户未登录，显示登录提示')
+        await this.showLoginRequired(container, isDarkMode)
+        return
+      }
+
       const i18n = await getContentI18n()
       const t = i18n.t.bind(i18n)
 
@@ -304,5 +314,57 @@ export class KolCardContent {
       return `${(count / 1000).toFixed(1)}K`
     }
     return count.toLocaleString()
+  }
+
+  /**
+   * 显示登录提示
+   */
+  static async showLoginRequired(container: HTMLElement, isDarkMode: boolean): Promise<void> {
+    try {
+      const i18n = await getContentI18n()
+      const t = i18n.t.bind(i18n)
+
+      container.innerHTML = `
+        <div style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          text-align: center;
+          color: ${isDarkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)'};
+        ">
+          <div style="
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+          ">
+            ${t('twitterDisplay.loginRequired') || '请先登录'}
+          </div>
+          <div style="
+            font-size: 12px;
+            opacity: 0.8;
+          ">
+            ${t('twitterDisplay.loginRequiredDesc') || '登录后即可查看KOL分析数据'}
+          </div>
+        </div>
+      `
+    } catch (error) {
+      console.error('❌ 显示登录提示失败:', error)
+      // 降级显示简单提示
+      container.innerHTML = `
+        <div style="
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          text-align: center;
+          color: ${isDarkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)'};
+          font-size: 14px;
+        ">
+          请先登录
+        </div>
+      `
+    }
   }
 }

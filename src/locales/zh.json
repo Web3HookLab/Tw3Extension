@@ -258,6 +258,8 @@
     "retry": "重试",
     "notLoggedIn": "请登录查看Web3分析数据",
     "loginPrompt": "点击扩展图标进行登录",
+    "loginRequired": "请先登录",
+    "loginRequiredDesc": "登录后即可查看KOL分析数据",
     "userInfo": "用户信息",
     "kolFollowing": "关注的KOL",
     "followers": "粉丝",

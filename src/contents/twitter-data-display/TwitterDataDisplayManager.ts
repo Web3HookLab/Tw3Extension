@@ -12,7 +12,58 @@ import { APP_CONFIG } from '~src/config/config'
 import { TwitterSettingsService } from './services/twitter-settings.service'
 import { TwitterInjectionService } from './services/twitter-injection.service'
 
+/**
+ * 检查是否为有效的Twitter用户页面
+ * 基于实际的注入目标进行检查
+ */
+function isValidPageForTwitterDisplay(): boolean {
+  // 检查URL是否为Twitter用户页面
+  const urlPattern = /^https:\/\/(x|twitter)\.com\/[^\/]+\/?$/
+  const isUserPage = urlPattern.test(window.location.href)
+
+  if (!isUserPage) {
+    return false
+  }
+
+  // 检查关键元素是否存在（按优先级顺序）
+  const keyElements = [
+    '[data-testid="UserName"]',           // 最可靠，每个用户页面都有
+    '[data-testid="userActions"]',        // 用户操作按钮，很稳定
+    '[data-testid="UserProfileHeader_Items"]', // 用户资料头部信息
+    '[data-testid="UserJoinDate"]',       // 加入日期
+  ]
+
+  // 检查哪些关键元素存在
+  const availableElements = keyElements.filter(selector =>
+    !!document.querySelector(selector)
+  )
+
+  // 分别检查高优先级元素
+  const hasUserName = !!document.querySelector('[data-testid="UserName"]')
+  const hasUserActions = !!document.querySelector('[data-testid="userActions"]')
+
+  // 判断页面是否有效：
+  // 1. 最好有UserName或userActions（高优先级）
+  // 2. 或者至少有2个其他关键元素
+  const isValidPage = (hasUserName || hasUserActions) || (availableElements.length >= 2)
+
+  console.log('🔍 Twitter用户页面检测:', {
+    url: window.location.href,
+    isUserPage,
+    hasUserName,
+    hasUserActions,
+    availableElements: availableElements.length,
+    foundElements: availableElements,
+    result: isValidPage
+  })
+
+  return isValidPage
+}
+
 export class TwitterDataDisplayManager {
+  private static instance: TwitterDataDisplayManager | null = null
+  private isInitialized = false
+
   private observer: MutationObserver | null = null
   private injectionLock: Map<string, boolean> = new Map() // 注入锁
   private injectedRestIds: Set<string> = new Set() // 已注入的restId
@@ -97,8 +148,38 @@ export class TwitterDataDisplayManager {
     },
   ]
 
-  constructor() {
-    this.init()
+  private constructor() {
+    // 私有构造函数，防止直接实例化
+  }
+
+  /**
+   * 获取单例实例
+   */
+  static getInstance(): TwitterDataDisplayManager {
+    if (!this.instance) {
+      this.instance = new TwitterDataDisplayManager()
+    }
+    return this.instance
+  }
+
+  /**
+   * 初始化管理器（静态方法）
+   */
+  static async initialize(): Promise<void> {
+    const manager = this.getInstance()
+    if (!manager.isInitialized) {
+      await manager.init()
+    }
+  }
+
+  /**
+   * 销毁管理器（静态方法）
+   */
+  static destroy(): void {
+    if (this.instance) {
+      this.instance.cleanup()
+      this.instance = null
+    }
   }
 
   /**
@@ -107,32 +188,102 @@ export class TwitterDataDisplayManager {
   private async init() {
     try {
       console.log('🚀 Twitter数据显示管理器初始化开始')
-      
-      // 获取设置
-      await this.loadSettings()
-      
-      // 注入样式
-      this.injectStyles()
-      
-      // 设置观察器
-      this.setupObserver()
-      
-      // 设置消息监听
-      this.setupMessageListener()
 
-      // 启动健康检查
-      this.startHealthCheck()
+      // 使用重试机制检查页面
+      const maxRetries = 5
+      let retryCount = 0
 
-      // 初始检查
-      setTimeout(() => this.checkAndInject(), this.config.injectionDelay)
+      const tryInitialize = async (): Promise<boolean> => {
+        retryCount++
+        console.log(`🔄 尝试初始化Twitter数据显示 (${retryCount}/${maxRetries})`)
 
-      // 添加调试工具
-      this.setupDebugTools()
+        // 检查是否为有效页面
+        if (!isValidPageForTwitterDisplay()) {
+          if (retryCount < maxRetries) {
+            console.log('📍 页面还未完全加载，稍后重试...')
+            setTimeout(() => tryInitialize(), 1000)
+            return false
+          } else {
+            console.log('📍 当前页面不适合Twitter数据显示，跳过初始化')
+            return false
+          }
+        }
 
-      console.log('✅ Twitter数据显示管理器初始化完成')
+        // 检查注入目标是否可用
+        if (!this.checkInjectionTargetsAvailability()) {
+          if (retryCount < maxRetries) {
+            console.log('🎯 注入目标未准备好，稍后重试...')
+            setTimeout(() => tryInitialize(), 1000)
+            return false
+          } else {
+            console.log('🎯 注入目标检查超时，跳过初始化')
+            return false
+          }
+        }
+
+        console.log('📍 页面和注入目标都已准备好，开始初始化')
+
+        // 获取设置
+        await this.loadSettings()
+
+        // 注入样式
+        this.injectStyles()
+
+        // 设置观察器
+        this.setupObserver()
+
+        // 设置消息监听
+        this.setupMessageListener()
+
+        // 启动健康检查
+        this.startHealthCheck()
+
+        // 初始检查
+        setTimeout(() => this.checkAndInject(), this.config.injectionDelay)
+
+        // 添加调试工具
+        this.setupDebugTools()
+
+        this.isInitialized = true
+        console.log('✅ Twitter数据显示管理器初始化完成')
+        return true
+      }
+
+      await tryInitialize()
     } catch (error) {
       console.error('❌ Twitter数据显示管理器初始化失败:', error)
     }
+  }
+
+  /**
+   * 检查注入目标可用性（基于实际注入目标列表）
+   */
+  private checkInjectionTargetsAvailability(): boolean {
+    console.log('🎯 检查注入目标可用性...')
+
+    const availableTargets = this.injectionTargets.filter(target => {
+      const element = document.querySelector(target.selector)
+      const available = !!element
+      console.log(`- ${target.name}: ${available ? '✅' : '❌'}`)
+      return available
+    })
+
+    const hasHighPriorityTargets = availableTargets.some(target =>
+      target.priority <= 2 // UserName 或 UserActions
+    )
+
+    if (availableTargets.length === 0) {
+      console.log('❌ 没有可用的注入目标')
+      return false
+    }
+
+    if (!hasHighPriorityTargets) {
+      console.log('⚠️ 缺少高优先级注入目标，可能页面还未完全加载')
+      return false
+    }
+
+    console.log(`✅ 找到 ${availableTargets.length} 个可用注入目标，包含高优先级目标`)
+    return true
   }
 
   /**
@@ -596,7 +747,62 @@ export class TwitterDataDisplayManager {
    * 设置DOM观察器
    */
   private setupObserver() {
+    // 合并关键元素和注入目标选择器
+    const keyElements = [
+      '[data-testid="UserName"]',
+      '[data-testid="userActions"]',
+      '[data-testid="UserProfileHeader_Items"]',
+      '[data-testid="UserJoinDate"]',
+    ]
+
+    const injectionSelectors = [
+      ...keyElements,  // 使用keyElements
+      '[data-testid="UserDescription"]',
+      'a[href*="/verified_followers"]',
+      'a[href*="/followers"]'
+    ]
+
     this.observer = new MutationObserver((mutations) => {
+      // 只处理与关键元素和注入目标相关的变化
+      const hasRelevantChanges = mutations.some(mutation => {
+        if (mutation.type === 'childList') {
+          const addedNodes = Array.from(mutation.addedNodes)
+          const removedNodes = Array.from(mutation.removedNodes)
+
+          // 检查新增节点是否包含关键元素
+          const hasRelevantAdditions = addedNodes.some(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as Element
+
+              // 检查是否包含任何关键元素或注入目标
+              return injectionSelectors.some(selector => {
+                return element.querySelector(selector) || element.matches(selector)
+              })
+            }
+            return false
+          })
+
+          // 检查移除的节点是否包含我们的卡片
+          const hasCardRemoved = removedNodes.some(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const element = node as Element
+              return element.classList.contains('tw3track-stats-card') ||
+                     element.classList.contains('tw3track-kol-card') ||
+                     element.querySelector('.tw3track-stats-card') ||
+                     element.querySelector('.tw3track-kol-card')
+            }
+            return false
+          })
+
+          return hasRelevantAdditions || hasCardRemoved
+        }
+        return false
+      })
+
+      if (!hasRelevantChanges) {
+        return
+      }
+
       // 防抖处理，避免频繁触发
       if (this.debounceTimer) {
         clearTimeout(this.debounceTimer)
@@ -612,7 +818,7 @@ export class TwitterDataDisplayManager {
       subtree: true
     })
 
-    console.log('👀 DOM观察器设置完成')
+    console.log('👀 DOM观察器设置完成（基于关键元素和注入目标优化）')
   }
 
   /**
