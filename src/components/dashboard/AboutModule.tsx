@@ -96,7 +96,7 @@ export function AboutModule() {
                   onClick={() => openLink('https://github.com/Web3HookLab/Tw3Extension')}
                   className="justify-start"
                 >
-                  <GitBranch className="w-4 h-4 mr-2" />https://github.com/Web3HookLab/Tw3Extension
+                  <GitBranch className="w-4 h-4 mr-2" />Tw3Extension
                   GitHub
                 </Button>
               </div>
