@@ -246,17 +246,41 @@ export class StatsCardButtons {
           result.error || '数据加载失败',
           isDarkMode
         )
-        
+
         console.error('❌ 卡片数据加载失败:', result.error)
+
+        // 发送错误事件，通知KOL卡片停止加载
+        const errorUpdateEvent = new CustomEvent('tw3track-data-updated', {
+          detail: {
+            restId,
+            data: null,
+            fromCache: false,
+            error: result.error || '数据加载失败'
+          }
+        })
+        document.dispatchEvent(errorUpdateEvent)
+        console.log('📡 已发送错误事件给KOL卡片')
       }
     } catch (error) {
       console.error('❌ 加载卡片数据异常:', error)
-      
+
       await StatsCardContent.showError(
         content,
         error instanceof Error ? error.message : '未知错误',
         isDarkMode
       )
+
+      // 发送异常错误事件，通知KOL卡片停止加载
+      const exceptionUpdateEvent = new CustomEvent('tw3track-data-updated', {
+        detail: {
+          restId,
+          data: null,
+          fromCache: false,
+          error: error instanceof Error ? error.message : '未知错误'
+        }
+      })
+      document.dispatchEvent(exceptionUpdateEvent)
+      console.log('📡 已发送异常错误事件给KOL卡片')
     }
   }
 

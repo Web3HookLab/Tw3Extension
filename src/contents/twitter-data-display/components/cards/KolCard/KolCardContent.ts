@@ -122,7 +122,7 @@ export class KolCardContent {
       const card = container.closest('.tw3track-kol-card')
       const header = card?.querySelector('.tw3track-kol-header')
       if (header) {
-        KolCardHeader.updateKolCount(header as HTMLElement, data.kol_count || 0)
+        await KolCardHeader.updateKolCount(header as HTMLElement, data.kol_count || 0)
       }
     } catch (error) {
       console.error('❌ 更新KOL数据失败:', error)

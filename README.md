@@ -128,6 +128,36 @@ bun run build
 
 ---
 
-**Version**: 1.0.0  
-**Author**: Web3Hook  
-**Last Updated**: 2025
+## Changelog | 更新日志
+
+### v1.0.1 - 2025.07.24
+
+#### English
+**🐛 Bug Fixes & Improvements**
+- Fixed KOL card loading error when StatsCard fails to load data
+- Corrected KOL card text display: changed "Following KOLs" to "KOL Followers" to accurately reflect "KOLs who follow this account"
+- Fixed KOL card empty state message to properly indicate "No KOLs are following this account"
+- Replaced hardcoded text in TermsAgreement component with internationalization support
+
+**📄 New Features**
+- Added comprehensive Terms of Service and Privacy Policy
+- Enhanced multilingual support for all user-facing text
+- Improved error handling and user experience
+
+#### 中文
+**🐛 错误修复与改进**
+- 修复了当StatsCard数据加载失败时KOL卡片持续加载的错误
+- 修正了KOL卡片文案显示：将"关注的KOL"改为"KOL关注者"，准确表达"关注此账户的KOL"含义
+- 修复了KOL卡片空状态提示，正确显示"没有任何KOL关注此账户"
+- 将TermsAgreement组件中的硬编码文本替换为多语言支持
+
+**📄 新增功能**
+- 添加了完整的服务条款和隐私政策
+- 增强了所有用户界面文本的多语言支持
+- 改进了错误处理和用户体验
+
+---
+
+**Version**: 1.0.1
+**Author**: Web3Hook
+**Last Updated**: 2025.07.24

@@ -1,4 +1,4 @@
-import React,{ useState, useRef, useEffect } from 'react';
+import React,{ useState, useRef } from 'react';
 import { useSettings } from "~src/contexts/SettingsContext";
 import { Button } from '~src/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~src/components/ui/card';
@@ -6,7 +6,7 @@ import { Checkbox } from '~src/components/ui/checkbox';
 import { ScrollArea } from '~src/components/ui/scroll-area';
 import { Separator } from '~src/components/ui/separator';
 import { Alert, AlertDescription } from '~src/components/ui/alert';
-import { FileText, Shield, AlertTriangle, Check, ScrollText, Eye } from 'lucide-react';
+import { FileText, Shield, AlertTriangle, Check, ScrollText, Eye, Lock, Users, Gavel, Scale } from 'lucide-react';
 
 interface TermsAgreementProps {
   onNext: () => void;
@@ -113,88 +113,221 @@ function TermsAgreement({ onNext, onPrev, onTermsAccept, termsAccepted = false }
             ref={scrollAreaRef}
           >
             <div className="prose prose-sm dark:prose-invert max-w-none">
-              {/* Typography 内容 */}
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <Shield className="w-5 h-5 mr-2 text-primary" />
-                {t('login.dataPrivacySecurity')}
-              </h3>
-              
-              <p className="text-sm text-muted-foreground mb-4">
-                {t('login.privacyPrinciples')}
-              </p>
+              {/* 隐私政策部分 */}
+              <h2 className="text-xl font-bold mb-4 flex items-center">
+                <Shield className="w-6 h-6 mr-2 text-primary" />
+                {t('login.privacyPolicy')}
+              </h2>
 
-              <ul className="text-sm space-y-2 mb-6">
-                <li className="flex items-start space-x-2">
-                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                  <span>{t('login.dataStoredLocally')}</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                  <span>{t('login.tokensEncrypted')}</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                  <span>{t('login.noPersonalInfo')}</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                  <span>{t('login.canDeleteData')}</span>
-                </li>
-              </ul>
-
-              <Separator className="my-4" />
-
-              <h3 className="text-lg font-semibold mb-3">{t('login.usageGuidelines')}</h3>
-              
-              <p className="text-sm text-muted-foreground mb-4">
-                {t('login.byUsingExtension')}
-              </p>
-
-              <ul className="text-sm space-y-2 mb-6">
-                <li>• {t('login.complianceWithLaws')}</li>
-                <li>• {t('login.noReverseEngineering')}</li>
-                <li>• {t('login.respectRateLimits')}</li>
-                <li>• {t('login.noMaliciousUse')}</li>
-                <li>• {t('login.keepTokensSecure')}</li>
-              </ul>
-
-              <Separator className="my-4" />
-
-              <h3 className="text-lg font-semibold mb-3 flex items-center">
-                <AlertTriangle className="w-5 h-5 mr-2 text-amber-500" />
-                {t('login.importantNotes')}
-              </h3>
-
-              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
-                <p className="text-sm text-amber-800 dark:text-amber-200">
-                  <strong>{t('login.apiUsage')}:</strong> {t('login.apiUsageDesc')}
+              <div className="bg-muted/30 rounded-lg p-3 mb-4">
+                <p className="text-xs text-muted-foreground mb-0">
+                  {t('login.lastUpdated')}: 2025年7月
                 </p>
               </div>
 
+              {/* 简介 */}
+              <h3 className="text-lg font-semibold mb-3 flex items-center">
+                <FileText className="w-5 h-5 mr-2 text-primary" />
+                {t('login.introduction')}
+              </h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.privacyIntro')}
+              </p>
+
+              {/* 数据收集 */}
+              <h3 className="text-lg font-semibold mb-3 flex items-center">
+                <Lock className="w-5 h-5 mr-2 text-green-600" />
+                {t('login.dataCollection')}
+              </h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.dataCollectionDesc')}
+              </p>
+
+              {/* 不收集个人数据 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.noPersonalDataCollection')}</h3>
+
+              <ul className="text-sm space-y-2 mb-6">
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.noBrowsingHistory')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.noPersonalInfoCollection')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.noOnlineTracking')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.noSensitiveBrowserInfo')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.localDataProcessing')}</span>
+                </li>
+              </ul>
+
+              {/* 本地数据存储 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.localDataStorage')}</h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.localDataStorageDesc')}
+              </p>
+
+              {/* 用户备注数据使用 */}
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">{t('login.userNotesDataUsage')}</h4>
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  <strong>{t('login.dataBackup')}:</strong> {t('login.dataBackupDesc')}
+                  {t('login.userNotesDataUsageDesc')}
                 </p>
               </div>
 
-              <Separator className="my-4" />
+              {/* 开源与透明 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.openSourceTransparency')}</h3>
 
-              <h3 className="text-lg font-semibold mb-3">{t('login.contactSupport')}</h3>
-              
-              <p className="text-sm text-muted-foreground mb-4">
-                {t('login.contactSupportDesc')}
+              <p className="text-sm text-muted-foreground mb-6">
+                {t('login.openSourceTransparencyDesc')}
               </p>
 
-              <ul className="text-sm space-y-1 mb-6">
-                {/* <li>• {t('login.extensionSettingsPage')}</li>
-                <li>• {t('login.githubRepositoryIssues')}</li> */}
-                <li>• {t('login.officialSupportChannels')}</li>
+              <Separator className="my-6" />
+
+              {/* 服务条款部分 */}
+              <h2 className="text-xl font-bold mb-4 flex items-center">
+                <Scale className="w-6 h-6 mr-2 text-primary" />
+                {t('login.serviceTerms')}
+              </h2>
+
+              <div className="bg-muted/30 rounded-lg p-3 mb-4">
+                <p className="text-xs text-muted-foreground mb-0">
+                  {t('login.lastUpdated')}: 2025年7月
+                </p>
+              </div>
+
+              {/* 条款接受 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.termsAcceptance')}</h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.termsAcceptanceDesc')}
+              </p>
+
+              {/* 服务描述 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.serviceDescription')}</h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.serviceDescriptionDesc')}
+              </p>
+
+              {/* 用户责任 */}
+              <h3 className="text-lg font-semibold mb-3 flex items-center">
+                <Users className="w-5 h-5 mr-2 text-blue-600" />
+                {t('login.userResponsibilities')}
+              </h3>
+
+              <ul className="text-sm space-y-2 mb-6">
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.complianceWithLaws')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.noIllegalActivities')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.respectUserPrivacy')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.noReverseEngineering')}</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span>{t('login.maintainAccountSecurity')}</span>
+                </li>
               </ul>
 
+              {/* 禁止使用和执法 */}
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-2 flex items-center">
+                  <AlertTriangle className="w-4 h-4 mr-2" />
+                  {t('login.prohibitedUseEnforcement')}
+                </h4>
+                <p className="text-sm text-red-800 dark:text-red-200">
+                  {t('login.prohibitedUseEnforcementDesc')}
+                </p>
+              </div>
+
+              {/* 账户暂停和封禁 */}
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-semibold text-amber-800 dark:text-amber-200 mb-2">{t('login.accountSuspensionBanning')}</h4>
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  {t('login.accountSuspensionBanningDesc')}
+                </p>
+              </div>
+
+              {/* 数据使用权利 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.dataUsageRights')}</h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.dataUsageRightsDesc')}
+              </p>
+
+              {/* 服务限制 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.serviceLimitations')}</h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.serviceLimitationsDesc')}
+              </p>
+
+              {/* 付款和退款政策 */}
+              <div className="bg-gray-50 dark:bg-gray-900/20 border border-gray-200 dark:border-gray-800 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">{t('login.paymentRefundPolicy')}</h4>
+                <p className="text-sm text-gray-800 dark:text-gray-200">
+                  {t('login.paymentRefundPolicyDesc')}
+                </p>
+              </div>
+
+              {/* 免责声明 */}
+              <h3 className="text-lg font-semibold mb-3 flex items-center">
+                <Gavel className="w-5 h-5 mr-2 text-gray-600" />
+                {t('login.disclaimer')}
+              </h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.disclaimerDesc')}
+              </p>
+
+              {/* 责任限制 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.liabilityLimitation')}</h3>
+
+              <p className="text-sm text-muted-foreground mb-4">
+                {t('login.liabilityLimitationDesc')}
+              </p>
+
+              {/* 最终解释权 */}
+              <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 mb-4">
+                <h4 className="text-sm font-semibold text-purple-800 dark:text-purple-200 mb-2">{t('login.finalInterpretationRights')}</h4>
+                <p className="text-sm text-purple-800 dark:text-purple-200">
+                  {t('login.finalInterpretationRightsDesc')}
+                </p>
+              </div>
+
+              {/* 联系信息 */}
+              <h3 className="text-lg font-semibold mb-3">{t('login.contactInformation')}</h3>
+
+              <p className="text-sm text-muted-foreground mb-6">
+                {t('login.contactInformationDesc')}
+              </p>
+
+              {/* 版本信息 */}
               <div className="bg-muted/50 rounded-lg p-4 mt-6">
                 <p className="text-xs text-muted-foreground">
                   {t('login.lastUpdated')}: {new Date().toLocaleDateString()}<br />
-                  {t('login.version')}: 1.0.0
+                  {t('login.versionInfo')}: 1.0.1
                 </p>
               </div>
 

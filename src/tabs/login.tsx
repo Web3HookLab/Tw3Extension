@@ -38,7 +38,7 @@ function LoginPage() {
     const [stepData, setStepData] = useState<StepData>({});
     const [isLoading, setIsLoading] = useState(false);
 
-    const { language, setLanguage, t } = useSettings();
+    const { t } = useSettings();
 
     // 更新步骤数据
     const updateStepData = (data: Partial<StepData>) => {

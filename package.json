@@ -1,7 +1,7 @@
 {
   "name": "tw3-track-extension",
   "displayName": "Tw3 Track Extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "web3 Enhancement Plugin",
   "author": "Web3Hook Web3Hook@outlook.coom",
   "scripts": {

@@ -153,17 +153,24 @@ export class KolCardHeader {
   /**
    * 更新标题中的KOL数量
    */
-  static updateKolCount(header: HTMLElement, count: number): void {
+  static async updateKolCount(header: HTMLElement, count: number): Promise<void> {
     try {
       const title = header.querySelector('h3')
       if (title) {
-        // 这里需要重新获取翻译，但为了简化，先用硬编码
-        const language = document.documentElement.lang || 'zh'
-        const text = language === 'zh' ? `关注的KOL (${count}个)` : `KOL Following (${count})`
+        const i18n = await getContentI18n()
+        const t = i18n.t.bind(i18n)
+        const text = t('twitterDisplay.kolCard').replace('{count}', count.toString())
         title.textContent = text
       }
     } catch (error) {
       console.warn('⚠️ 更新KOL数量失败:', error)
+      // 降级处理
+      const title = header.querySelector('h3')
+      if (title) {
+        const language = document.documentElement.lang || 'zh'
+        const text = language === 'zh' ? `KOL关注者 (${count}个)` : `KOL Followers (${count})`
+        title.textContent = text
+      }
     }
   }
 }
