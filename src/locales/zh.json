@@ -42,8 +42,8 @@
     "walletNotes":"Wallet 备注",
     "followTrends":"关注趋势",
     "deletionReminder":"删除提醒",
-    "nextResetDate":"下次重置日期",
-    "expiryDate":"到期日期",
+    "nextResetDate":"每日查询重置日期",
+    "expiryDate":"订阅到期日期",
     "followers":"关注者"
   },
   "popup": {
