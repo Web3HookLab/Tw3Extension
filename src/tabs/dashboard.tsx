@@ -13,8 +13,7 @@ import {
   Zap,
   Bell,
   Info,
-  ExternalLink,
-  Github
+  Activity
 } from 'lucide-react';
 import { Separator } from "~src/components/ui/separator";
 import { Badge } from "~src/components/ui/badge";
@@ -30,8 +29,13 @@ import { TwitterTrendsModule } from "~src/components/dashboard/TwitterTrends";
 import { WalletNotesModule } from "~src/components/dashboard/WalletNotes/WalletNotesModule";
 import { TwitterNotesModule } from "~src/components/dashboard/TwitterNotes/TwitterNotesModule";
 import { AboutModule } from "~src/components/dashboard/AboutModule";
+import { RealtimeCAModule } from "~src/components/dashboard/RealtimeCA";
+import { CALeaderboardModule } from "~src/components/dashboard/CALeaderboard/CALeaderboardModule";
+import { Toaster } from "sonner";
 // 模块枚举
 enum DashboardModule {
+    REALTIME_CA = 'realtime-ca',
+    CA_LEADERBOARD = 'ca-leaderboard',
     WEB3_TRENDS = 'web3-trends',
     TWITTER_NOTES = 'twitter-notes',
     WALLET_NOTES = 'wallet-notes',
@@ -39,12 +43,24 @@ enum DashboardModule {
     ABOUT = 'about'
 }
 function DashboardPage() {
-    const [activeModule, setActiveModule] = useState<DashboardModule>(DashboardModule.WEB3_TRENDS);
+    const [activeModule, setActiveModule] = useState<DashboardModule>(DashboardModule.REALTIME_CA);
     const { t } = useSettings();
     const { userInfo, logout } = useAuth();
 
     // 侧边栏菜单项
     const menuItems = [
+        {
+            id: DashboardModule.REALTIME_CA,
+            label: t('realtimeCA.title'),
+            icon: Activity,
+            description: t('realtimeCA.description')
+        },
+        {
+            id: DashboardModule.CA_LEADERBOARD,
+            label: t('caLeaderboard.title'),
+            icon: TrendingUp,
+            description: t('caLeaderboard.description')
+        },
         {
             id: DashboardModule.WEB3_TRENDS,
             label: t('dashboard.web3Trends'),
@@ -87,6 +103,10 @@ function DashboardPage() {
     // 修复渲染函数，添加默认内容或临时占位符
     const renderCurrentModule = () => {
         switch (activeModule) {
+            case DashboardModule.REALTIME_CA:
+                return <RealtimeCAModule/>
+            case DashboardModule.CA_LEADERBOARD:
+                return <CALeaderboardModule/>
             case DashboardModule.WEB3_TRENDS:
                 return <TwitterTrendsModule/>
             case DashboardModule.TWITTER_NOTES:
@@ -114,23 +134,24 @@ function DashboardPage() {
     const currentModule = getCurrentModuleInfo();
 
     return (
-        <SidebarProvider>
-            <div className="min-h-screen flex w-full bg-background">
-                {/* 侧边栏 */}
-                <Sidebar className="border-r">
-                    <SidebarHeader className="p-4">
-                        <div className="flex items-center space-x-3">
-                            <img
-                                src={chrome.runtime.getURL("assets/icon.png")}
-                                alt="Extension Icon"
-                                className="w-8 h-8 rounded-full object-cover border border-border"
-                            />
-                            <div>
-                                <h2 className="font-semibold text-lg">{t('dashboard.title')}</h2>
-                                <p className="text-xs text-muted-foreground">{t('dashboard.subtitle')}</p>
+        <>
+            <SidebarProvider>
+                <div className="min-h-screen flex w-full bg-background">
+                    {/* 侧边栏 */}
+                    <Sidebar className="border-r">
+                        <SidebarHeader className="p-4">
+                            <div className="flex items-center space-x-3">
+                                <img
+                                    src={chrome.runtime.getURL("assets/icon.png")}
+                                    alt="Extension Icon"
+                                    className="w-8 h-8 rounded-full object-cover border border-border"
+                                />
+                                <div>
+                                    <h2 className="font-semibold text-lg">{t('dashboard.title')}</h2>
+                                    <p className="text-xs text-muted-foreground">{t('dashboard.subtitle')}</p>
+                                </div>
                             </div>
-                        </div>
-                    </SidebarHeader>
+                        </SidebarHeader>
 
                     <SidebarContent>
                         {/* 用户信息卡片 */}
@@ -298,6 +319,8 @@ function DashboardPage() {
                 </div>
             </div>
         </SidebarProvider>
+        <Toaster />
+        </>
     );
 }
 

@@ -3,6 +3,15 @@
  * 负责在Twitter页面注入备注徽章功能
  */
 
+import type { PlasmoCSConfig } from "plasmo"
+
+// Plasmo配置 - 只在Twitter/X页面激活
+export const config: PlasmoCSConfig = {
+  matches: ["https://x.com/*", "https://twitter.com/*"],
+  all_frames: false,
+  run_at: "document_end"
+}
+
 console.log('🚀 Twitter备注注入Content Script开始加载，当前页面:', location.href)
 console.log('📍 当前时间:', new Date().toISOString())
 console.log('📄 文档状态:', document.readyState)

@@ -158,26 +158,26 @@ export function UserHistoryPanel({ restId }: UserHistoryPanelProps) {
                 const changes = getChanges(item, history[index + 1])
                 
                 return (
-                  <div 
+                  <div
                     key={`${item.rest_id}-${item.scraped_at}-${index}`}
-                    className="p-4 rounded-lg border bg-card hover:bg-muted/50"
+                    className="p-2 rounded-lg border bg-card hover:bg-muted/50"
                   >
                     {/* 用户信息头部 */}
-                    <div className="flex items-start gap-3 mb-3">
+                    <div className="flex items-start gap-2 mb-2">
                       <img
                         src={item.profile_image_url_https}
                         alt={item.name}
-                        className="w-10 h-10 rounded-full flex-shrink-0"
+                        className="w-8 h-8 rounded-full flex-shrink-0"
                         onError={(e) => {
-                          e.currentTarget.src = '/placeholder-avatar.png'
+                          e.currentTarget.src = chrome.runtime.getURL("assets/icon.png")
                         }}
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1 mb-1 min-w-0">
-                          <span className="font-medium text-sm truncate">{item.name}</span>
+                          <span className="font-medium text-xs truncate">{item.name}</span>
                           <span className="text-muted-foreground text-xs truncate">@{item.screen_name}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
                           <Calendar className="w-3 h-3 flex-shrink-0" />
                           <span className="truncate">{formatTime(item.scraped_at)}</span>
                         </div>
@@ -192,8 +192,8 @@ export function UserHistoryPanel({ restId }: UserHistoryPanelProps) {
 
                     {/* 简介 */}
                     {item.description && (
-                      <div className="mb-3">
-                        <p className="text-sm text-muted-foreground line-clamp-3">
+                      <div className="mb-2">
+                        <p className="text-xs text-muted-foreground line-clamp-2">
                           {item.description}
                         </p>
                       </div>
@@ -202,7 +202,7 @@ export function UserHistoryPanel({ restId }: UserHistoryPanelProps) {
                     {/* 变更内容 */}
                     {changes.length > 0 && (
                       <div className="space-y-1">
-                        <div className="text-xs font-medium text-muted-foreground mb-2">
+                        <div className="text-xs font-medium text-muted-foreground mb-1">
                           {t('sidePanel.changes')}:
                         </div>
                         <div className="flex flex-wrap gap-1">
@@ -210,7 +210,7 @@ export function UserHistoryPanel({ restId }: UserHistoryPanelProps) {
                             <Badge
                               key={changeIndex}
                               variant="outline"
-                              className="text-xs"
+                              className="text-xs px-1.5 py-0.5"
                             >
                               {change}
                             </Badge>

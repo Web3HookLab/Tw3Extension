@@ -148,6 +148,13 @@ export const DEX_PLATFORMS: DexPlatform[] = [
     getUrl: (address: string) => `https://web3.okx.com/zh-hans/token/bsc/${address}`,
     networks: ['ethereum', 'base', 'bsc']
   },
+  {
+    id: 'okx_xlayer',
+    name: 'OKX DEX (XLayer)',
+    icon: '/assets/dex/okx.webp',
+    getUrl: (address: string) => `https://web3.okx.com/zh-hans/token/x-layer/${address}`,
+    networks: ['ethereum', 'xlayer']
+  },
   // EVM网络平台 - GeckoTerminal
   {
     id: 'geckoterminal_eth',

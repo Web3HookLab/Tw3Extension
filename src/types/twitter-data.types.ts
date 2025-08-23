@@ -4,6 +4,28 @@ export interface TwitterKol {
   name: string;
   profile_image_url_https: string;
   screen_name: string;
+  description_en?: string;  // 英文描述/备注
+  description_zh?: string;  // 中文描述/备注
+}
+
+// CA统计数据结构
+export interface CaStats {
+  last_30_days: {
+    deleted: number;
+    published: number;
+  };
+  last_7_days: {
+    deleted: number;
+    published: number;
+  };
+  today: {
+    deleted: number;
+    published: number;
+  };
+  total: {
+    deleted: number;
+    published: number;
+  };
 }
 
 export interface TwitterUserData {
@@ -23,6 +45,7 @@ export interface TwitterUserData {
   screen_name_list: string[];
   twitter_follow_event_count: number;
   wallet_address_list: string[];
+  ca_stats?: CaStats;  // CA统计数据
 }
 
 export interface TwitterStatusResponse {

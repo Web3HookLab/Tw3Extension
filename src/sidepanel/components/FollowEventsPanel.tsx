@@ -140,12 +140,12 @@ export function FollowEventsPanel({ restId }: FollowEventsPanelProps) {
               {events.map((event, index) => (
                 <div
                   key={`${event.screen_name}-${event.event_time}-${index}`}
-                  className="p-3 rounded-lg border bg-card hover:bg-muted/50"
+                  className="p-2 rounded-lg border bg-card hover:bg-muted/50"
                 >
-                  {/* 顶部：用户信息和状态标签 */}
-                  <div className="flex items-start gap-3 mb-2">
+                  {/* 主要内容区域 */}
+                  <div className="flex items-start gap-2 mb-2">
                     {/* 变更类型图标 */}
-                    <div className={`p-1.5 rounded-full flex-shrink-0 ${
+                    <div className={`p-1 rounded-full flex-shrink-0 ${
                       event.change_type === 'add'
                         ? 'bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400'
                         : 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400'
@@ -161,36 +161,36 @@ export function FollowEventsPanel({ restId }: FollowEventsPanelProps) {
                     <img
                       src={event.profile_image_url_https}
                       alt={event.name}
-                      className="w-8 h-8 rounded-full flex-shrink-0"
+                      className="w-7 h-7 rounded-full flex-shrink-0"
                       onError={(e) => {
-                        e.currentTarget.src = '/placeholder-avatar.png'
+                        e.currentTarget.src = chrome.runtime.getURL("assets/icon.png")
                       }}
                     />
 
-                    {/* 用户信息 */}
+                    {/* 用户信息和状态 */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
+                      {/* 第一行：用户名和状态标签 */}
+                      <div className="flex items-center justify-between gap-1 mb-1">
                         <div className="flex items-center gap-1 min-w-0 flex-1">
-                          <span className="font-medium text-sm truncate">{event.name}</span>
+                          <span className="font-medium text-xs truncate">{event.name}</span>
                           <span className="text-muted-foreground text-xs truncate">@{event.screen_name}</span>
                         </div>
-                        {/* 变更类型标签 - 移到右上角 */}
                         <Badge
                           variant={event.change_type === 'add' ? 'default' : 'destructive'}
-                          className="text-xs flex-shrink-0"
+                          className="text-xs flex-shrink-0 px-1.5 py-0.5"
                         >
                           {event.change_type === 'add' ? t('sidePanel.followed') : t('sidePanel.unfollowed')}
                         </Badge>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* 底部：详细信息 */}
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground ml-12">
-                    <Users className="w-3 h-3" />
-                    <span>{formatFollowersCount(event.followers_count)}</span>
-                    <span>•</span>
-                    <span className="truncate">{formatTime(event.event_time)}</span>
+                      {/* 第二行：粉丝数和时间 */}
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Users className="w-3 h-3" />
+                        <span>{formatFollowersCount(event.followers_count)}</span>
+                        <span>•</span>
+                        <span className="truncate">{formatTime(event.event_time)}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}

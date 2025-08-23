@@ -82,13 +82,16 @@ export class TwitterDataService {
       })
 
       if (response.success && response.data) {
-        // 缓存数据
-        await this.setCachedData(restId, response.data)
+        // 在开发环境中增强数据以演示新功能
+        const enhancedData = this.enhanceDataForDemo(response.data)
+
+        // 缓存增强后的数据
+        await this.setCachedData(restId, enhancedData)
 
         console.log('✅ 数据获取成功:', restId)
         return {
           success: true,
-          data: response.data,
+          data: enhancedData,
           fromCache: false,
           timestamp: Date.now()
         }
@@ -106,6 +109,64 @@ export class TwitterDataService {
         error: error instanceof Error ? error.message : '未知错误'
       }
     }
+  }
+
+  /**
+   * 在开发环境中增强数据以演示新功能
+   */
+  private static enhanceDataForDemo(data: TwitterUserData): TwitterUserData {
+    // 只在开发环境中增强数据
+    if (process.env.NODE_ENV !== 'development') {
+      return data
+    }
+
+    const enhancedData = { ...data }
+
+    // 添加 CA 统计示例数据
+    if (!enhancedData.ca_stats) {
+      enhancedData.ca_stats = {
+        today: { published: 2, deleted: 0 },
+        last_7_days: { published: 15, deleted: 3 },
+        last_30_days: { published: 45, deleted: 8 },
+        total: { published: 156, deleted: 23 }
+      }
+    }
+
+    // 为现有 KOL 添加描述字段，并添加新的示例 KOL
+    if (enhancedData.kol_list && enhancedData.kol_list.length > 0) {
+      // 为现有 KOL 添加描述
+      enhancedData.kol_list = enhancedData.kol_list.map(kol => ({
+        ...kol,
+        description_en: kol.description_en || `${kol.name} - Crypto influencer`,
+        description_zh: kol.description_zh || `${kol.name} - 加密货币意见领袖`
+      }))
+
+      // 添加新的示例 KOL
+      const newKols = [
+        {
+          description_en: "General Partner at Andreessen Horowitz",
+          description_zh: "a16z 普通合伙人",
+          followers_count: 301374,
+          name: "Sriram Krishnan",
+          profile_image_url_https: "https://pbs.twimg.com/profile_images/1873344970104492033/l7dRtM08_normal.jpg",
+          screen_name: "sriramk"
+        },
+        {
+          description_en: "Crypto enthusiast and trader",
+          description_zh: "加密货币爱好者和交易员",
+          followers_count: 995581,
+          name: "ALX 🇺🇸",
+          profile_image_url_https: "https://pbs.twimg.com/profile_images/1925680100793516032/KYzSQusS_normal.jpg",
+          screen_name: "alx"
+        }
+      ]
+
+      enhancedData.kol_list = [...enhancedData.kol_list, ...newKols]
+      enhancedData.kol_count = enhancedData.kol_list.length
+    }
+
+    console.log('🎭 开发环境：已增强数据以演示新功能')
+    return enhancedData
   }
 
   /**

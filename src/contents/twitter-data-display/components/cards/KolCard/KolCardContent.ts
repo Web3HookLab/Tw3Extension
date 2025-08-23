@@ -199,19 +199,34 @@ export class KolCardContent {
               
               <!-- 用户信息 -->
               <div style="flex: 1; min-width: 0;">
+                <!-- 备注/描述 - 主要显示内容 -->
+                ${this.getKolDescription(kol, i18n.getLanguage()) ? `
                 <div style="
-                  font-size: 12px; 
-                  font-weight: 600; 
+                  font-size: 12px;
+                  font-weight: 600;
                   color: ${isDarkMode ? 'rgb(250, 250, 250)' : 'rgb(9, 9, 11)'};
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  margin-bottom: 2px;
+                ">
+                  ${this.getKolDescription(kol, i18n.getLanguage())}
+                </div>
+                ` : ''}
+                <!-- 用户名 - 小字体 -->
+                <div style="
+                  font-size: 10px;
+                  color: ${isDarkMode ? 'rgb(161, 161, 170)' : 'rgb(113, 113, 122)'};
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
                 ">
                   ${kol.name}
                 </div>
+                <!-- 用户名@handle - 更小字体 -->
                 <div style="
-                  font-size: 10px; 
-                  color: ${isDarkMode ? 'rgb(161, 161, 170)' : 'rgb(113, 113, 122)'};
+                  font-size: 9px;
+                  color: ${isDarkMode ? 'rgb(113, 113, 122)' : 'rgb(161, 161, 170)'};
                   white-space: nowrap;
                   overflow: hidden;
                   text-overflow: ellipsis;
@@ -302,6 +317,27 @@ export class KolCardContent {
         })
       }
     })
+  }
+
+  /**
+   * 获取KOL描述（优先显示备注，根据语言选择）
+   */
+  private static getKolDescription(kol: any, language: string): string {
+    // 优先显示对应语言的描述
+    if (language === 'zh' && kol.description_zh) {
+      return kol.description_zh
+    }
+    if (language === 'en' && kol.description_en) {
+      return kol.description_en
+    }
+    // 如果没有对应语言的描述，显示另一种语言的描述
+    if (kol.description_zh) {
+      return kol.description_zh
+    }
+    if (kol.description_en) {
+      return kol.description_en
+    }
+    return ''
   }
 
   /**

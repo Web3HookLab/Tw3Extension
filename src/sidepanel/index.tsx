@@ -4,6 +4,7 @@ import { SettingsProvider, useSettings } from '~src/contexts/SettingsContext'
 import { Button } from '~src/components/ui/button'
 import { ScrollArea } from '~src/components/ui/scroll-area'
 import { X, RefreshCw, Clock } from 'lucide-react'
+import { Toaster } from 'sonner'
 
 
 import { NameChangesPanel } from './components/NameChangesPanel'
@@ -13,16 +14,18 @@ import { FollowEventsPanel } from './components/FollowEventsPanel'
 import { UserHistoryPanel } from './components/UserHistoryPanel'
 import { TwitterNotesPanel } from './components/TwitterNotesPanel'
 import { WalletNotesPanel } from './components/WalletNotesPanel'
+import { DeletedTweetsPanel } from './components/DeletedTweetsPanel'
 import "~src/styles/style.css"
 
 
 
 interface SidePanelData {
-  type: 'nameChanges' | 'screenNameChanges' | 'walletAddresses' | 'followEvents' | 'userHistory' | 'twitterNotes' | 'walletNotes'
+  type: 'nameChanges' | 'screenNameChanges' | 'walletAddresses' | 'followEvents' | 'userHistory' | 'twitterNotes' | 'walletNotes' | 'deletedTweets'
   title: string
   restId: string
   walletAddress?: string  // 钱包备注专用字段
   userData?: any  // 本地数据类型使用（nameChanges, screenNameChanges, walletAddresses, walletNotes）
+  deletedCount?: number  // 删除推文数量
 }
 
 function SidePanelApp(): React.JSX.Element {
@@ -86,7 +89,7 @@ function SidePanelApp(): React.JSX.Element {
           }
         }
         // API数据类型：将在各自的组件中处理
-        else if (['followEvents', 'userHistory'].includes(type)) {
+        else if (['followEvents', 'userHistory', 'deletedTweets'].includes(type)) {
           console.log('🔄 API data type, will be handled by component:', type)
         }
         // 钱包备注类型：使用传递的userData
@@ -162,13 +165,13 @@ function SidePanelApp(): React.JSX.Element {
   }
 
   return (
-    <div className="h-full flex flex-col bg-background">
+    <div className="h-full flex flex-col bg-background min-w-[320px]">
       {/* 头部 */}
-      <div className="border-b border-border p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <h1 className="text-lg font-semibold text-foreground">{data.title}</h1>
-            <p className="text-sm text-muted-foreground mt-1">
+      <div className="border-b border-border p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base sm:text-lg font-semibold text-foreground truncate">{data.title}</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1 truncate">
               {t('sidePanel.userId')}: {(() => {
                 // 钱包备注类型显示钱包地址
                 if (data.type === 'walletNotes' && data.walletAddress) {
@@ -179,7 +182,7 @@ function SidePanelApp(): React.JSX.Element {
               })()}
             </p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center flex-shrink-0">
             <Button
               variant="ghost"
               size="sm"
@@ -195,7 +198,7 @@ function SidePanelApp(): React.JSX.Element {
       {/* 内容区域 */}
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
-          <div className="p-4">
+          <div className="p-3 sm:p-4">
             {(() => {
               switch (data.type) {
                 case 'nameChanges':
@@ -212,6 +215,8 @@ function SidePanelApp(): React.JSX.Element {
                   return <TwitterNotesPanel restId={data.restId} userData={data.userData} />
                 case 'walletNotes':
                   return <WalletNotesPanel data={data.userData} />
+                case 'deletedTweets':
+                  return <DeletedTweetsPanel restId={data.restId} deletedCount={data.deletedCount} />
                 default:
                   return (
                     <p className="text-center text-muted-foreground py-8">
@@ -244,6 +249,7 @@ export default function SidePanel() {
   return (
     <SettingsProvider>
       <SidePanelApp />
+      <Toaster position="top-right" />
     </SettingsProvider>
   )
 }
