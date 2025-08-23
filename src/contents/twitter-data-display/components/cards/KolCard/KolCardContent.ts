@@ -75,6 +75,14 @@ export class KolCardContent {
 
       // 尝试从缓存获取初始数据
       const result = await TwitterDataService.getTwitterData(restId, false)
+      console.log('📊 KOL卡片获取数据结果:', {
+        success: result.success,
+        hasData: !!result.data,
+        kolCount: result.data?.kol_count,
+        kolListLength: result.data?.kol_list?.length,
+        fromCache: result.fromCache
+      })
+
       if (result.success && result.data) {
         await this.updateWithData(container, result.data, isDarkMode, result.fromCache || false)
       } else {
@@ -152,7 +160,15 @@ export class KolCardContent {
     const t = i18n.t.bind(i18n)
 
     // 检查是否有KOL数据
+    console.log('🔍 KOL数据检查:', {
+      hasKolList: !!data.kol_list,
+      kolListLength: data.kol_list?.length,
+      kolCount: data.kol_count,
+      firstKol: data.kol_list?.[0]
+    })
+
     if (!data.kol_list || data.kol_list.length === 0) {
+      console.log('❌ 没有KOL数据，显示空状态')
       await EmptyState.createKolEmpty(container, isDarkMode)
       return
     }

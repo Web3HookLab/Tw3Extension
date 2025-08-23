@@ -11,10 +11,12 @@ A Chrome extension for tracking Twitter Web3 data and trends.
 
 ### Features
 - 🐦 **Twitter Data Analysis**: Real-time tracking of Twitter user follow changes, history records and KOL analysis
-- 💰 **Wallet Address Tracking**: Automatically identify and manage wallet addresses associated with Twitter users  
+- 💰 **Wallet Address Tracking**: Automatically identify and manage wallet addresses associated with Twitter users
 - 📝 **Smart Notes System**: Add personalized notes for Twitter users and wallet addresses
 - 📊 **Web3 Trends Monitoring**: Track hot trends and market dynamics in the Web3 field
 - 🔍 **Multi-Network Support**: Support for EVM, Solana, and Sui networks
+- 🚀 **Real-time CA Monitoring**: Live tracking of Contract Address activities and launches
+- 📈 **CA Leaderboard**: Trending Contract Addresses with success rate analytics
 
 ### Tech Stack
 - **Framework**: React + TypeScript
@@ -77,6 +79,8 @@ This project is licensed under the MIT License.
 - 📝 **智能备注系统**: 为Twitter用户和钱包地址添加个性化备注
 - 📊 **Web3趋势监控**: 追踪Web3领域的热门趋势和市场动态
 - 🔍 **多网络支持**: 支持EVM、Solana和Sui网络
+- 🚀 **实时CA监控**: 实时追踪合约地址活动和发布情况
+- 📈 **CA热榜**: 热门合约地址排行榜，包含成功率分析
 
 ### 技术栈
 - **框架**: React + TypeScript
@@ -156,8 +160,52 @@ bun run build
 - 增强了所有用户界面文本的多语言支持
 - 改进了错误处理和用户体验
 
+### v2.0.0 - 2025.08.24
+
+#### English
+**🚀 Major Features**
+- Added Real-time CA Monitoring with live tracking of contract address activities
+- Added CA Leaderboard with trending contract addresses and success rate analytics
+- Added CA Statistics Dashboard with comprehensive data visualization
+- Added Deleted CA Tracking functionality to monitor removed contracts
+- Added KOL bilingual notes support (English/Chinese descriptions)
+
+**🐛 Bug Fixes & Improvements**
+- Fixed avatar loading issues with fallback to default logo
+- Fixed sidebar sizing and layout problems
+- Fixed content script injection to only load on specified websites (Twitter/X)
+- Optimized dashboard interface styling and user experience
+- Enhanced data caching and performance
+
+**🎨 UI/UX Enhancements**
+- Redesigned dashboard with improved navigation and layout
+- Enhanced sidebar with collapsible functionality and better responsive design
+- Improved card layouts with better data presentation
+- Added loading states and error handling throughout the application
+
+#### 中文
+**🚀 主要功能**
+- 添加实时CA监控，实时追踪合约地址活动
+- 添加CA热榜，展示热门合约地址和成功率分析
+- 添加CA统计数据面板，提供全面的数据可视化
+- 添加查看删除CA功能，监控被移除的合约
+- 添加KOL中英文备注支持（英文/中文描述）
+
+**🐛 错误修复与改进**
+- 修复头像加载问题，使用默认logo作为备用
+- 修复侧边栏尺寸和布局问题
+- 修复在任意网页上加载注入脚本的问题，现在只在指定网站（Twitter/X）加载
+- 优化调整后台界面样式和用户体验
+- 增强数据缓存和性能表现
+
+**🎨 界面/体验优化**
+- 重新设计仪表板，改进导航和布局
+- 增强侧边栏，支持折叠功能和更好的响应式设计
+- 改进卡片布局，提供更好的数据展示
+- 在整个应用中添加加载状态和错误处理
+
 ---
 
-**Version**: 1.0.1
+**Version**: 2.0.0
 **Author**: Web3Hook
-**Last Updated**: 2025.07.24
+**Last Updated**: 2025.08.24

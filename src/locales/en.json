@@ -35,6 +35,8 @@
     "custom": "Custom"
   },
   "userInfo": {
+    "account": "Account",
+    "details": "Details",
     "used": "Used",
     "twitterNotes": "Twitter Notes",
     "walletNotes": "Wallet Notes",
@@ -422,6 +424,9 @@
   "dashboard": {
     "title": "Tw3Track Dashboard",
     "subtitle": "X Web3 Trends",
+    "analytics": "Analytics",
+    "dataManagement": "Data Management",
+    "system": "System",
     "web3Trends": "X Web3 Hot Trends",
     "web3TrendsDesc": "Track and analyze X Web3 market trends",
     "twitterTrends": "X Trend Analysis",

@@ -5,6 +5,14 @@
 
 import { TwitterDataDisplayManager } from './TwitterDataDisplayManager'
 
+import type { PlasmoCSConfig } from "plasmo"
+
+// Plasmo配置 - 只在Twitter/X页面激活
+export const config: PlasmoCSConfig = {
+  matches: ["https://x.com/*", "https://twitter.com/*"],
+  all_frames: false,
+  run_at: "document_end"
+}
 /**
  * 初始化Twitter数据显示管理器
  */

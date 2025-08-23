@@ -35,6 +35,8 @@
     "custom": "自定义"
   },
   "userInfo":{
+    "account":"账户信息",
+    "details":"详细信息",
     "used":"已使用",
     "twitterNotes":"Twitter 备注",
     "walletNotes":"Wallet 备注",
@@ -423,6 +425,9 @@
   "dashboard": {
     "title": "Tw3Track 后台面板",
     "subtitle": "X Web3趋势",
+    "analytics": "数据分析",
+    "dataManagement": "数据管理",
+    "system": "系统",
     "web3Trends": "X Web3 热门趋势",
     "web3TrendsDesc": "追踪和分析 X Web3 市场趋势",
     "twitterTrends": "X趋势分析",

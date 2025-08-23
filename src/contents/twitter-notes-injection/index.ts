@@ -5,6 +5,13 @@
 
 import { TwitterNotesInjectionManager } from './TwitterNotesInjectionManager'
 
+import type { PlasmoCSConfig } from "plasmo"
+
+export const config: PlasmoCSConfig = {
+  matches: ["https://x.com/*", "https://twitter.com/*"],
+  all_frames: false,
+  run_at: "document_end"
+}
 // 管理器实例
 let manager: TwitterNotesInjectionManager | null = null
 
