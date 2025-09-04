@@ -63,7 +63,7 @@ export function AboutModule() {
                   <label className="text-sm font-medium">{t('dashboard.version')}</label>
                 </div>
                 <Badge variant="secondary" className="text-sm">
-                  v1.0
+                  2.1.0
                 </Badge>
               </div>
             </div>

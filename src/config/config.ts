@@ -13,6 +13,8 @@ export const API_CONFIG = {
     TWITTER_USER_HISTORY: '/api/twitter/user_history',
     // 推特删除推文
     TWITTER_DELETED_TWEETS: '/api/twitter/user_deleted_tweets',
+    // 地址推文查询
+    TWITTER_ADDRESS_TWEETS: '/api/twitter/address_tweets',
     //推特
     TWITTER_NOTES_LIST: '/api/twitter/notes',
     TWITTER_NOTES_ADD: '/api/twitter/notes/add',
@@ -25,9 +27,15 @@ export const API_CONFIG = {
     WALLET_NOTES_DELETE: '/api/wallet/notes/delete',
     // CA热榜
     LEADERBOARD: '/leaderboard',
+    // 删帖榜单
+    DELETED_TWEETS_LEADERBOARD: '/api/twitter/deleted-tweets-leaderboard',
+    // CA地址搜索
+    CA_ADDRESS_SEARCH: '/api/twitter/address_tweets',
   },
   // 请求超时配置
   REQUEST_TIMEOUT: 10000, // 10秒
+  // CA地址搜索专用超时
+  CA_SEARCH_TIMEOUT: 30000, // 30秒
 } as const;
 
 // 刷新配置 - 统一管理所有刷新相关配置

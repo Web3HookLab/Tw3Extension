@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SettingsProvider, useSettings } from "~src/contexts/SettingsContext";
 import { ThemeProvider } from "~src/contexts/ThemeContext";
 import { useAuth } from "~src/services/auth.service";
@@ -14,7 +14,9 @@ import {
   Bell,
   Info,
   Activity,
-  ChevronRight
+  ChevronRight,
+  Search,
+  Trash2
 } from 'lucide-react';
 import { Separator } from "~src/components/ui/separator";
 import { Badge } from "~src/components/ui/badge";
@@ -51,12 +53,16 @@ import { TwitterNotesModule } from "~src/components/dashboard/TwitterNotes/Twitt
 import { AboutModule } from "~src/components/dashboard/AboutModule";
 import { RealtimeCAModule } from "~src/components/dashboard/RealtimeCA";
 import { CALeaderboardModule } from "~src/components/dashboard/CALeaderboard/CALeaderboardModule";
+import { DeletedTweetsLeaderboardModule } from "~src/components/dashboard/DeletedTweetsLeaderboard/DeletedTweetsLeaderboardModule";
+import { CAAddressSearchModule } from "~src/components/dashboard/CAAddressSearch";
 import { Toaster } from "sonner";
 // 模块枚举
 enum DashboardModule {
     REALTIME_CA = 'realtime-ca',
     CA_LEADERBOARD = 'ca-leaderboard',
+    DELETED_TWEETS_LEADERBOARD = 'deleted-tweets-leaderboard',
     WEB3_TRENDS = 'web3-trends',
+    CA_ADDRESS_SEARCH = 'ca-address-search',
     TWITTER_NOTES = 'twitter-notes',
     WALLET_NOTES = 'wallet-notes',
     SETTINGS = 'settings',
@@ -66,6 +72,11 @@ function DashboardPage() {
     const [activeModule, setActiveModule] = useState<DashboardModule>(DashboardModule.REALTIME_CA);
     const { t } = useSettings();
     const { userInfo, logout } = useAuth();
+
+    // 调试日志：页面切换
+    useEffect(() => {
+        console.log('🔄 Dashboard active module changed:', activeModule);
+    }, [activeModule]);
 
     // 侧边栏菜单项 - 重构为分组结构
     const menuGroups = [
@@ -85,10 +96,22 @@ function DashboardPage() {
                     description: t('caLeaderboard.description')
                 },
                 {
+                    id: DashboardModule.DELETED_TWEETS_LEADERBOARD,
+                    label: t('deletedTweetsLeaderboard.title'),
+                    icon: Trash2,
+                    description: t('deletedTweetsLeaderboard.description')
+                },
+                {
                     id: DashboardModule.WEB3_TRENDS,
                     label: t('dashboard.web3Trends'),
                     icon: TrendingUp,
                     description: t('dashboard.web3TrendsDesc')
+                },
+                {
+                    id: DashboardModule.CA_ADDRESS_SEARCH,
+                    label: t('addressSearch.title'),
+                    icon: Search,
+                    description: t('addressSearch.description')
                 }
             ]
         },
@@ -139,11 +162,15 @@ function DashboardPage() {
     const renderCurrentModule = () => {
         switch (activeModule) {
             case DashboardModule.REALTIME_CA:
-                return <RealtimeCAModule/>
+                return <RealtimeCAModule isPageActive={true} />
             case DashboardModule.CA_LEADERBOARD:
                 return <CALeaderboardModule/>
+            case DashboardModule.DELETED_TWEETS_LEADERBOARD:
+                return <DeletedTweetsLeaderboardModule/>
             case DashboardModule.WEB3_TRENDS:
                 return <TwitterTrendsModule/>
+            case DashboardModule.CA_ADDRESS_SEARCH:
+                return <CAAddressSearchModule/>
             case DashboardModule.TWITTER_NOTES:
                 return <TwitterNotesModule/>
             case DashboardModule.WALLET_NOTES:

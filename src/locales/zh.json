@@ -2,7 +2,6 @@
   "common": {
     "next": "下一步",
     "previous": "上一步",
-    "cancel": "取消",
     "confirm": "确认",
     "save": "保存",
     "close": "关闭",
@@ -11,6 +10,8 @@
     "refresh": "刷新",
     "hour": "小时",
     "minute": "分钟",
+    "minutes": "分钟",
+    "seconds": "秒",
     "page": "页",
     "clear": "清除",
     "edit": "编辑",
@@ -24,27 +25,31 @@
     "showing": "显示",
     "of": "共",
     "items": "项",
-    "copy":"复制",
-    "copied":"已复制",
-    "copyFailed":"复制失败",
+    "copy": "复制",
+    "copied": "已复制",
+    "copyFailed": "复制失败",
     "retry": "重试",
     "loadMore": "加载更多",
     "cached": "缓存",
     "comingSoon": "即将推出",
     "subscriptionRequired": "此功能需要会员订阅",
-    "custom": "自定义"
+    "custom": "自定义",
+    "unknownToken": "未知代币",
+    "address": "地址",
+    "error": "错误",
+    "cancel": "取消"
   },
-  "userInfo":{
-    "account":"账户信息",
-    "details":"详细信息",
-    "used":"已使用",
-    "twitterNotes":"Twitter 备注",
-    "walletNotes":"Wallet 备注",
-    "followTrends":"关注趋势",
-    "deletionReminder":"删除提醒",
-    "nextResetDate":"每日查询重置日期",
-    "expiryDate":"订阅到期日期",
-    "followers":"关注者"
+  "userInfo": {
+    "account": "账户信息",
+    "details": "详细信息",
+    "used": "已使用",
+    "twitterNotes": "Twitter 备注",
+    "walletNotes": "Wallet 备注",
+    "followTrends": "关注趋势",
+    "deletionReminder": "删除提醒",
+    "nextResetDate": "每日查询重置日期",
+    "expiryDate": "订阅到期日期",
+    "followers": "关注者"
   },
   "popup": {
     "welcome": "欢迎使用Tw3Track！",
@@ -374,7 +379,6 @@
     "upgradeDesc": "这是会员专享功能，请升级会员以查看资料变动时间线。",
     "profileChanges": "资料变动",
     "noHistoryData": "暂无历史数据"
-
   },
   "emptyState": {
     "noKolData": "暂无KOL数据",
@@ -471,10 +475,7 @@
     "quickSelect": "快速选择",
     "lastHour": "最近1小时",
     "last6Hours": "最近6小时",
-    "today": "今日",
-    "last24Hours": "最近24小时",
     "totalMentions": "总提及数",
-    "changeRate": "涨跌幅",
     "activeUsers": "活跃用户数",
     "minuteStats": "分钟统计",
     "firstMentioned": "首次提及",
@@ -531,6 +532,90 @@
     "genuineDiscussion": "真实讨论",
     "needsAttention": "需关注",
     "possibleBotActivity": "可能刷量"
+  },
+  "deletedTweetsLeaderboard": {
+    "title": "删帖榜单",
+    "description": "查看用户删帖统计排行榜",
+    "timeRange": {
+      "today": "今日",
+      "7days": "7天",
+      "30days": "30天",
+      "all": "全部时间"
+    },
+    "sortBy": {
+      "deleted_count": "删帖数量",
+      "latest_delete": "最新删帖"
+    },
+    "order": {
+      "desc": "降序",
+      "asc": "升序"
+    },
+    "stats": {
+      "totalUsers": "总用户数",
+      "showing": "显示",
+      "cacheTime": "缓存时间",
+      "minutesAgo": "分钟前",
+      "hoursAgo": "小时前",
+      "justNow": "刚刚"
+    },
+    "table": {
+      "rank": "排名",
+      "user": "用户",
+      "deletedCount": "删帖数",
+      "totalTweets": "总推文",
+      "deleteRate": "删帖率",
+      "latestDelete": "最后删帖"
+    },
+    "filters": {
+      "timeRange": "时间范围",
+      "sortBy": "排序方式",
+      "order": "排序顺序",
+      "pageSize": "每页显示",
+      "search": "搜索用户",
+      "searchPlaceholder": "搜索用户名或显示名称...",
+      "searchHint": "支持搜索缓存数据 用户名（@username）或显示名称",
+      "clearSearch": "清除搜索"
+    },
+    "actions": {
+      "refresh": "刷新",
+      "export": "导出"
+    },
+    "messages": {
+      "loading": "加载中...",
+      "loadingMore": "加载更多中...",
+      "noData": "暂无数据",
+      "loadFailed": "加载失败",
+      "refreshSuccess": "刷新成功",
+      "exportSuccess": "导出成功",
+      "loadMoreFailed": "加载更多数据失败",
+      "dataRefreshed": "数据已刷新"
+    },
+    "loadMore": {
+      "showing": "已显示",
+      "of": "/",
+      "items": "条数据",
+      "loadMore": "加载更多",
+      "loading": "加载中...",
+      "noMoreData": "没有更多数据了",
+      "allDataShown": "已显示全部数据",
+      "scrollHint": "点击'加载更多'或向下滚动查看更多数据"
+    },
+    "search": {
+      "searchLabel": "搜索:",
+      "noResults": "当前筛选条件下没有找到相关的删帖数据，请尝试调整筛选条件或刷新数据。"
+    },
+    "time": {
+      "justNow": "刚刚",
+      "minutesAgo": "分钟前",
+      "hoursAgo": "小时前",
+      "daysAgo": "天前"
+    },
+    "userActions": {
+      "copyUsername": "复制用户名",
+      "copyFailed": "复制失败",
+      "usernameCopied": "用户名已复制",
+      "visitProfile": "访问 Twitter 主页"
+    }
   },
   "about": {
     "subtitle": "Twitter Web3 数据追踪扩展",
@@ -699,7 +784,7 @@
     "noNote": "暂无备注",
     "total": "总计",
     "filtered": "筛选",
-    "selectAtLeastOne":"请至少选择一个标签",
+    "selectAtLeastOne": "请至少选择一个标签",
     "viewProfile": "查看资料",
     "notePlaceholder": "输入备注内容...",
     "tagOptions": [
@@ -786,6 +871,12 @@
     "seconds": "秒",
     "trendsCount": "Trends 展示条数",
     "items": "条",
+    "caSearchAutoUpdate": {
+      "title": "CA搜索 自动更新间隔",
+      "description": "设置CA地址搜索结果的自动更新频率，0表示关闭自动更新",
+      "disabled": "关闭自动更新",
+      "recommended": "推荐"
+    },
     "refreshTwitterNotes": "刷新推特备注",
     "refreshWalletNotes": "刷新钱包备注",
     "refreshTwitterNotesDesc": "重新获取最新的推特备注数据",
@@ -918,6 +1009,7 @@
       "clear": "清理",
       "pause": "暂停",
       "resume": "恢复",
+      "paused": "已暂停",
       "filters": "过滤器",
       "pauseTooltip": "暂停数据渲染",
       "resumeTooltip": "恢复数据渲染"
@@ -1058,6 +1150,9 @@
       "firstMention": "🥇 首次",
       "latestMention": "🕐 最新",
       "chart": "📊 Chart",
+      "tweetAnalysis": "代币社交趋势K线",
+      "tweetAnalysisButton": "立即分析",
+      "klineAnalysisLabel": "K线分析",
       "copyTokenAddress": "点击复制代币地址",
       "firstLaunch": "首发",
       "times": "次"
@@ -1096,6 +1191,190 @@
       "waitingData": "等待CA事件数据...",
       "realtime": "实时",
       "dataCount": "{count}条"
+    }
+  },
+  "klineAnalysis": {
+    "title": "代币社交趋势K线",
+    "description": "分析代币相关推文对价格的影响",
+    "loading": "正在加载分析数据...",
+    "error": "加载分析数据失败",
+    "retry": "重试",
+    "priceChart": "价格走势图",
+    "dataSource": "数据源",
+    "tweetEvents": "推文事件",
+    "chartDescription": "图表显示影响最大的前10个事件 ",
+    "firstMentionUser": "首次提及用户",
+    "topUsers": "热门用户",
+    "topUsersCount": "前",
+    "usersUnit": "名",
+    "tweets": "条",
+    "followers": "粉丝",
+    "noKlineData": "无法获取K线数据",
+    "noKlineDataDescription": "未能从 GeckoTerminal、Pump.fun 或 Raydium 获取到该代币的价格数据",
+    "noTweetData": "暂无推文数据",
+    "noTweetDataDescription": "未找到该地址的相关推文数据",
+    "eventImpactAnalysis": "事件影响分析",
+    "noEventData": "暂无推文事件数据",
+    "timeParseError": "时间解析失败",
+    "invalidBasePrice": "基准价格无效",
+    "close": "关闭",
+    "statistics": "统计信息",
+    "totalTweets": "总推文数",
+    "activeTweets": "活跃推文",
+    "deletedTweets": "已删除",
+    "analysisEvents": "分析事件",
+    "mostActiveDate": "最活跃日期",
+    "tweetsCount": "条推文",
+    "hotUsers": "热门用户显示",
+    "klineArea": "K线图区域",
+    "eventImpactAnalysisArea": "事件影响分析",
+    "noDataPrompt": "无数据提示",
+    "permissionError": "此功能仅对会员用户开放，免费计划不可用",
+    "dataFetchError": "获取数据失败",
+    "chainSelector": {
+      "title": "选择网络",
+      "chainsAvailable": "个网络",
+      "currentNetwork": "当前网络",
+      "dataPoints": "数据点",
+      "switchingChain": "切换网络中...",
+      "switchChainError": "切换网络失败",
+      "noDataOnChain": "该网络暂无数据"
+    },
+    "impactMultiple": "影响倍数",
+    "expand": "展开",
+    "collapse": "收起",
+    "chartTitle": "15分钟K线图表",
+    "professionalAnalysis": "专业加密货币分析",
+    "timeLabel": "时间",
+    "dataRangeLabel": "数据范围",
+    "dataPoints": "点",
+    "hours": "h",
+    "followers": "粉丝",
+    "baseline": "基准",
+    "peak": "最高",
+    "clickToViewTweet": "点击查看推文详情"
+  },
+  "addressSearch": {
+    "title": "CA地址搜索",
+    "description": "搜索Solana和Ethereum地址的相关推文信息",
+    "placeholder": "请输入Solana或Ethereum地址...",
+    "search": "搜索",
+    "searching": "搜索中...",
+    "clear": "清除",
+    "retry": "重试",
+    "paste": "粘贴",
+    "copy": "复制",
+    "supportedFormats": "支持Solana和Ethereum地址格式",
+    "validFormat": "检测到有效的{type}地址",
+    "permissionRequired": "此功能仅对会员用户开放，免费用户无法使用",
+    "upgrade": "立即升级",
+    "stats": {
+      "title": "统计信息",
+      "totalTweets": "总推文数",
+      "activeTweets": "活跃推文",
+      "deletedTweets": "已删除推文",
+      "mostActiveDate": "最活跃日期",
+      "tweets": "条推文",
+      "activityLevel": "活跃度",
+      "veryActive": "非常活跃",
+      "active": "活跃",
+      "moderate": "一般",
+      "low": "较低",
+      "veryLow": "很低"
+    },
+    "topUsers": {
+      "title": "热门用户",
+      "noData": "暂无数据",
+      "topContributor": "最佳贡献者",
+      "followers": "粉丝",
+      "tweets": "推文",
+      "rankingNote": "按推文数量排序，显示前3名最活跃用户"
+    },
+    "tweets": {
+      "title": "相关推文",
+      "noData": "暂无推文数据",
+      "followers": "粉丝",
+      "daysAgo": "天前",
+      "hoursAgo": "小时前",
+      "justNow": "刚刚",
+      "loadMore": "加载更多",
+      "remaining": "条剩余",
+      "description": "点击推文可在新窗口中查看详情",
+      "status": {
+        "active": "活跃",
+        "deleted": "已删除"
+      }
+    },
+    "results": {
+      "idle": {
+        "title": "开始搜索CA地址",
+        "description": "输入Solana或Ethereum地址，查看相关的推文信息和统计数据"
+      },
+      "noData": {
+        "title": "未找到相关数据",
+        "description": "该地址暂无相关推文记录，请尝试搜索其他地址"
+      },
+      "searchedAddress": "搜索地址",
+      "network": "网络"
+    },
+    "history": {
+      "title": "搜索历史",
+      "recent": "最近搜索",
+      "empty": "暂无搜索历史",
+      "clear": "清空历史"
+    },
+    "info": {
+      "title": "功能说明",
+      "feature1": "支持Solana和Ethereum地址搜索",
+      "feature2": "显示地址相关的推文统计和热门用户",
+      "feature3": "自动保存搜索历史，方便快速访问",
+      "feature4": "实时数据更新，确保信息准确性"
+    },
+    "refreshNow": "立即更新",
+    "autoUpdateIn": "后自动更新",
+    "autoUpdateMinute": "分钟后自动更新",
+    "autoUpdateSeconds": "秒后自动更新",
+    "tokenInfo": {
+      "title": "代币信息",
+      "address": "代币地址",
+      "description": "代币描述",
+      "website": "官网",
+      "twitter": "Twitter",
+      "copyAddress": "复制地址",
+      "copyAddressTooltip": "复制代币地址到剪贴板",
+      "searchOnTwitter": "Twitter搜索",
+      "searchOnTwitterTooltip": "在Twitter上搜索此代币地址",
+      "klineAnalysis": "代币社交趋势K线",
+      "klineAnalysisTooltip": "查看代币价格走势和推文事件关联分析",
+      "externalLinks": "外部链接"
+    },
+    "firstMention": {
+      "title": "首次提及",
+      "pioneer": "先驱者",
+      "noData": "暂无首次提及用户",
+      "followers": "粉丝",
+      "tweets": "推文",
+      "first": "首发",
+      "earliestMention": "最早提及",
+      "description": "最先提及该地址的用户"
+    },
+    "disclaimer": "数据不一定保证全面，仅供参考，不构成投资建议",
+    "address": {
+      "error": {
+        "empty": "请输入地址",
+        "unknownFormat": "无法识别的地址格式",
+        "invalid": "地址格式不正确",
+        "ethereum": {
+          "noPrefix": "Ethereum地址必须以0x开头",
+          "invalidLength": "Ethereum地址长度必须为42个字符",
+          "invalidFormat": "Ethereum地址格式不正确"
+        },
+        "solana": {
+          "tooShort": "Solana地址长度过短",
+          "tooLong": "Solana地址长度过长",
+          "invalidFormat": "Solana地址格式不正确"
+        }
+      }
     }
   }
 }

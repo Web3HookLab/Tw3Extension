@@ -15,13 +15,21 @@ export function LanguageSettings() {
     language, setLanguage,
     theme, setTheme,
     autoRefreshInterval, setAutoRefreshInterval,
-    trendsCount, setTrendsCount
+    trendsCount, setTrendsCount,
+    caSearchAutoUpdateInterval, setCaSearchAutoUpdateInterval
   } = useSettings();
 
   const { t } = useSettings();
 
   const TRENDS_COUNT_OPTIONS = [10, 20, 30, 40, 50];
   const AUTO_REFRESH_OPTIONS = [5, 10, 15, 30, 60];
+  const CA_SEARCH_AUTO_UPDATE_OPTIONS = [
+    { value: 0, label: t('settings.caSearchAutoUpdate.disabled') },
+    { value: 30, label: '30 ' + t('common.seconds') },
+    { value: 60, label: '1 ' + t('common.minute') + ' (' + t('settings.caSearchAutoUpdate.recommended') + ')' },
+    { value: 120, label: '2 ' + t('common.minutes') },
+    { value: 300, label: '5 ' + t('common.minutes') }
+  ];
 
   return (
     <Card>
@@ -93,6 +101,29 @@ export function LanguageSettings() {
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        {/* CA搜索自动更新间隔 */}
+        <div className="space-y-2">
+          <Label>{t('settings.caSearchAutoUpdate.title')}</Label>
+          <Select
+            value={caSearchAutoUpdateInterval.toString()}
+            onValueChange={(value) => setCaSearchAutoUpdateInterval(parseInt(value))}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {CA_SEARCH_AUTO_UPDATE_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value.toString()}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-sm text-muted-foreground">
+            {t('settings.caSearchAutoUpdate.description')}
+          </p>
         </div>
       </CardContent>
     </Card>

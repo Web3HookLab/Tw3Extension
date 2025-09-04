@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '~src/components/ui/car
 import { Alert, AlertDescription } from '~src/components/ui/alert';
 import { Button } from '~src/components/ui/button';
 import { Badge } from '~src/components/ui/badge';
+import { Pause } from 'lucide-react';
 import { Activity, Play, Pause } from 'lucide-react';
 
 
@@ -16,6 +17,7 @@ import { TokenBannerSkeleton, ControlsSkeleton } from './FixedSkeleton';
 import { RealtimeCAFilters } from './RealtimeCAFilters';
 import { RealtimeCASearch } from './RealtimeCASearch';
 import { RealtimeCASettings as SettingsDialog } from './RealtimeCASettings';
+import { TweetAnalysisModal } from '~src/components/kline-analysis';
 import { useWebSocket } from './hooks/useWebSocket';
 import { useCACache } from './hooks/useCACache';
 import { useHoverPause } from './hooks/useHoverPause';
@@ -32,9 +34,18 @@ import type {
 
 const storage = new Storage({ area: 'local' });
 
-export function RealtimeCAModule() {
+interface RealtimeCAModuleProps {
+  isPageActive?: boolean;
+}
+
+export function RealtimeCAModule({ isPageActive = true }: RealtimeCAModuleProps = {}) {
   const { userInfo } = useAuth();
   const { t } = useSettings();
+
+  // 调试日志：页面活跃状态变化
+  useEffect(() => {
+    console.log('🏠 RealtimeCAModule page activity:', isPageActive);
+  }, [isPageActive]);
 
   // 状态管理
   const [viewMode, setViewMode] = useState<ViewMode>('realtime');
@@ -47,6 +58,15 @@ export function RealtimeCAModule() {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [hasAutoConnected, setHasAutoConnected] = useState(false); // 标记是否已经自动连接过
   const [manuallyDisconnected, setManuallyDisconnected] = useState(false); // 标记是否手动断开过
+
+  // 推文分析弹窗状态
+  const [analysisModal, setAnalysisModal] = useState({
+    isOpen: false,
+    tokenAddress: '',
+    tokenSymbol: '',
+    tokenName: '',
+    networkType: ''
+  });
 
   // 权限检查 - 与TwitterTrends保持一致
   const canAccess = userInfo && userInfo.plan !== 'Free';
@@ -69,7 +89,8 @@ export function RealtimeCAModule() {
     updateSubscription
   } = useWebSocket({
     onMessage: handleWebSocketMessage,
-    settings
+    settings,
+    isPageActive
   });
 
   // 加载设置和过滤器配置
@@ -153,7 +174,9 @@ export function RealtimeCAModule() {
 
   // 处理缓冲区事件（鼠标离开且未暂停时，或恢复暂停时）
   useEffect(() => {
-    if ((!isHovered && !isPaused) && eventBuffer.length > 0) {
+    const shouldProcessBuffer = (!isHovered && !isPaused) && eventBuffer.length > 0;
+
+    if (shouldProcessBuffer) {
       // 清除之前的定时器
       if (bufferTimeoutRef.current) {
         clearTimeout(bufferTimeoutRef.current);
@@ -175,6 +198,24 @@ export function RealtimeCAModule() {
       }
     };
   }, [isHovered, isPaused, eventBuffer]);
+
+  // 专门处理暂停状态变化
+  useEffect(() => {
+    // 当从暂停状态恢复时，立即处理缓冲区（不管鼠标是否悬停）
+    if (!isPaused && eventBuffer.length > 0) {
+      // 清除之前的定时器
+      if (bufferTimeoutRef.current) {
+        clearTimeout(bufferTimeoutRef.current);
+      }
+
+      // 立即处理缓冲区事件
+      setRealtimeEvents(prev => {
+        const newEvents = [...eventBuffer, ...prev];
+        return newEvents.slice(0, DISPLAY_CONFIG.REALTIME_SIZE);
+      });
+      setEventBuffer([]);
+    }
+  }, [isPaused]); // 只监听 isPaused 变化
 
   // 切换暂停/恢复
   const togglePause = () => {
@@ -231,6 +272,29 @@ export function RealtimeCAModule() {
     console.log(`🔍 Search results: ${results.length} / ${cachedEvents.length}`);
   };
 
+  // 处理打开推文分析弹窗
+  const handleOpenAnalysis = (tokenData: {
+    tokenAddress: string;
+    tokenSymbol: string;
+    tokenName: string;
+    networkType: string;
+  }) => {
+    console.log('🔍 打开推文分析弹窗:', tokenData);
+    setAnalysisModal({
+      ...tokenData,
+      isOpen: true
+    });
+  };
+
+  // 关闭推文分析弹窗
+  const handleCloseAnalysis = () => {
+    console.log('❌ 关闭推文分析弹窗');
+    setAnalysisModal(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+  };
+
 
 
   // 手动连接/断开（简化版，参考原型逻辑）
@@ -245,7 +309,7 @@ export function RealtimeCAModule() {
       console.log(t('realtimeCA.module.manualConnectLog'));
       // 手动连接时，清除手动断开标记
       setManuallyDisconnected(false);
-      connect();
+      connect(true); // 🔑 传递 forceConnect = true，确保能够重新连接
     }
   };
 
@@ -420,14 +484,30 @@ export function RealtimeCAModule() {
             events={getDisplayEvents()}
             viewMode={viewMode}
             connectionStatus={connectionStatus}
+            onOpenAnalysis={handleOpenAnalysis}
           />
         </div>
 
-        {/* 悬停暂停提示 - 静默显示，不显示文字 */}
-        {isHovered && viewMode === 'realtime' && eventBuffer.length > 0 && (
+        {/* 悬停暂停提示 */}
+        {isHovered && viewMode === 'realtime' && eventBuffer.length > 0 && !isPaused && (
           <div className="absolute top-2 right-2 z-10">
             <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs">
               {eventBuffer.length} {t('realtimeCA.list.pendingUpdates')}
+            </Badge>
+          </div>
+        )}
+
+        {/* 暂停状态提示 */}
+        {isPaused && viewMode === 'realtime' && (
+          <div className="absolute top-2 right-2 z-10">
+            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs flex items-center gap-1">
+              <Pause className="h-3 w-3" />
+              {t('realtimeCA.controls.paused')}
+              {eventBuffer.length > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 bg-blue-100 rounded text-xs">
+                  {eventBuffer.length}
+                </span>
+              )}
             </Badge>
           </div>
         )}
@@ -442,6 +522,18 @@ export function RealtimeCAModule() {
         cacheCount={cachedEvents.length}
         onClearCache={handleClearCache}
       />
+
+      {/* 推文分析弹窗 - 独立于组件重新渲染 */}
+      {analysisModal.isOpen && (
+        <TweetAnalysisModal
+          isOpen={analysisModal.isOpen}
+          onClose={handleCloseAnalysis}
+          tokenAddress={analysisModal.tokenAddress}
+          tokenSymbol={analysisModal.tokenSymbol}
+          tokenName={analysisModal.tokenName}
+          networkType={analysisModal.networkType}
+        />
+      )}
     </Card>
   );
 }

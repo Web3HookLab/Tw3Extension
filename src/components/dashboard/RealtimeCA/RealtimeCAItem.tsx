@@ -1,8 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Badge } from '~src/components/ui/badge';
+import { Button } from '~src/components/ui/button';
 import { Card, CardContent } from '~src/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '~src/components/ui/avatar';
 import { useSettings } from '~src/contexts/SettingsContext';
+
 
 import {
   formatTimestamp,
@@ -21,11 +23,18 @@ interface RealtimeCAItemProps {
   index: number;
   isExpanded: boolean;
   onToggleExpanded: () => void;
+  onOpenAnalysis?: (tokenData: {
+    tokenAddress: string;
+    tokenSymbol: string;
+    tokenName: string;
+    networkType: string;
+  }) => void;
 }
 
-export const RealtimeCAItem = React.memo(function RealtimeCAItem({
+const RealtimeCAItemComponent = function RealtimeCAItem({
   event,
   index,
+  onOpenAnalysis
 }: RealtimeCAItemProps) {
   const { t } = useSettings();
   const [dexSettings, setDexSettings] = useState<DexPlatformSettings>(getDefaultDexSettings());
@@ -98,6 +107,28 @@ export const RealtimeCAItem = React.memo(function RealtimeCAItem({
     }
   }, [dexSettings]);
 
+  // Handle Tweet Analysis button click
+  const handleTweetAnalysis = useCallback(async (tokenAddress: string, tokenSymbol: string, tokenName: string, networkType: string) => {
+    try {
+      console.log('🔍 开始推文分析:', { tokenAddress, tokenSymbol, tokenName, networkType });
+
+      // 调用父组件的回调函数打开弹窗
+      onOpenAnalysis?.({
+        tokenAddress,
+        tokenSymbol,
+        tokenName,
+        networkType
+      });
+
+    } catch (error) {
+      console.error('❌ 推文分析失败:', error);
+      const { toast } = await import('sonner');
+      toast.error('推文分析失败', {
+        description: error instanceof Error ? error.message : '未知错误'
+      });
+    }
+  }, [onOpenAnalysis]);
+
   // Handle user avatar/name click - redirect to Twitter
   const handleUserClick = useCallback((screenName: string) => {
     openTwitterProfile(screenName);
@@ -105,8 +136,11 @@ export const RealtimeCAItem = React.memo(function RealtimeCAItem({
 
   // Multi-token tab state
   const [activeTokenIndex, setActiveTokenIndex] = useState(0);
-  
+
+
+
   return (
+    <>
     <Card className={`ca-card transition-all duration-200 hover:shadow-md ${
       index === 0 ? 'border-primary/20 bg-primary/5' : ''
     }`}>
@@ -238,6 +272,45 @@ export const RealtimeCAItem = React.memo(function RealtimeCAItem({
             {truncateText(tweet.content, 150)}
           </p>
         </div>
+
+        {/* 📊 社交趋势分析区域 - 独立显眼区域 */}
+        {mentions.length > 0 && (
+          <div className="mb-4">
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-lg border border-purple-200 dark:border-purple-800 p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <span className="text-lg">📊</span>
+                    <span className="font-medium text-sm text-purple-800 dark:text-purple-200">
+                      {t('realtimeCA.item.tweetAnalysis')}
+                    </span>
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+                    {t('realtimeCA.item.klineAnalysisLabel')}
+                  </Badge>
+                </div>
+                <Button
+                  onClick={() => {
+                    const currentToken = mentions[activeTokenIndex];
+                    // 使用 chain 字段而不是 network_type，因为 chain 包含多链信息
+                    const networkType = currentToken.chain || currentToken.network_type || 'solana';
+                    handleTweetAnalysis(
+                      currentToken.address,
+                      currentToken.symbol,
+                      currentToken.name,
+                      networkType
+                    );
+                  }}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5"
+                  size="sm"
+                >
+                  <span className="mr-1">🚀</span>
+                  {t('realtimeCA.item.tweetAnalysisButton')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 🪙 Token information area - supports multi-token tabs */}
         {mentions.length > 0 && (
@@ -429,6 +502,15 @@ export const RealtimeCAItem = React.memo(function RealtimeCAItem({
                           <span className="text-xs text-muted-foreground">
                             {formatTimestamp(currentToken.mention_stats.first_mention_user.mention_time)}
                           </span>
+                          {/* ✨ 新增：显示最早提及时间 */}
+                          {currentToken.mention_stats.first_mention_user.tweet_time && (
+                            <>
+                              <span className="text-xs text-muted-foreground">•</span>
+                              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                                最早: {formatTimestamp(currentToken.mention_stats.first_mention_user.tweet_time)}
+                              </Badge>
+                            </>
+                          )}
                         </div>
                       )}
 
@@ -474,5 +556,30 @@ export const RealtimeCAItem = React.memo(function RealtimeCAItem({
         )}
       </CardContent>
     </Card>
+
+
+  </>
   );
-});
+};
+
+// 自定义比较函数，在用户交互时阻止不必要的重新渲染
+const arePropsEqual = (prevProps: RealtimeCAItemProps, nextProps: RealtimeCAItemProps) => {
+  // 如果索引变化很大，说明列表发生了重大变化，需要重新渲染
+  if (Math.abs(prevProps.index - nextProps.index) > 2) {
+    return false;
+  }
+
+  // 比较关键数据是否变化
+  const prevData = prevProps.event.data;
+  const nextData = nextProps.event.data;
+
+  // 用户信息、推文内容、代币信息是否变化
+  const userChanged = prevData.user.rest_id !== nextData.user.rest_id;
+  const tweetChanged = prevData.tweet.tweet_id !== nextData.tweet.tweet_id;
+  const mentionsChanged = JSON.stringify(prevData.mentions) !== JSON.stringify(nextData.mentions);
+
+  // 如果关键数据没有变化，则不重新渲染
+  return !userChanged && !tweetChanged && !mentionsChanged;
+};
+
+export const RealtimeCAItem = React.memo(RealtimeCAItemComponent, arePropsEqual);

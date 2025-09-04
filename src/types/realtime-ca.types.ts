@@ -128,6 +128,7 @@ export interface MentionStats {
   first_mention_user: CAEventUser & {
     tweet_id: string;
     mention_time: string;
+    tweet_time: string;  // ✨ 新增的最早提及时间
   };
   last_mention_user: CAEventUser & {
     tweet_id: string;

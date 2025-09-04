@@ -35,23 +35,19 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
       const cached = await storage.get(STORAGE_KEYS.CACHE) as CachedCAData;
       
       if (cached && Array.isArray(cached.events)) {
-        console.log(`📦 Loading ${cached.events.length} cached events`);
-        
         // 清理过期数据
         let events = cleanExpiredCache(cached.events, expiryDays);
-        
+
         // 限制缓存大小
         events = limitCacheSize(events, maxCacheSize);
-        
+
         setCachedEvents(events);
-        
+
         // 如果数据被清理，保存更新后的缓存
         if (events.length !== cached.events.length) {
-          console.log(`🧹 Cleaned cache: ${cached.events.length} -> ${events.length} events`);
           await saveCache();
         }
       } else {
-        console.log('📦 No cached events found');
         setCachedEvents([]);
       }
     } catch (error) {
@@ -72,7 +68,6 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
       };
       
       await storage.set(STORAGE_KEYS.CACHE, cacheData);
-      console.log(`💾 Saved ${cachedEvents.length} events to cache`);
     } catch (error) {
       console.error('❌ Failed to save cache:', error);
     }
@@ -87,8 +82,6 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
       // 限制缓存大小
       newEvents = limitCacheSize(newEvents, maxCacheSize);
 
-      console.log(`📝 Added event to cache: ${newEvents.length}/${maxCacheSize}`, event);
-
       // 立即保存到存储（异步，使用新计算的数据）
       const saveToStorage = async () => {
         try {
@@ -98,7 +91,6 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
             totalCount: newEvents.length
           };
           await storage.set(STORAGE_KEYS.CACHE, cacheData);
-          console.log(`💾 Auto-saved ${newEvents.length} events to storage (single)`);
         } catch (error) {
           console.error('❌ Failed to auto-save cache (single):', error);
         }
@@ -125,8 +117,6 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
       // 限制缓存大小
       combined = limitCacheSize(combined, maxCacheSize);
 
-      console.log(`📝 Added ${newEvents.length} events to cache: ${combined.length}/${maxCacheSize}`);
-
       // 立即保存到存储（异步，使用新计算的数据）
       const saveToStorage = async () => {
         try {
@@ -136,7 +126,6 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
             totalCount: combined.length
           };
           await storage.set(STORAGE_KEYS.CACHE, cacheData);
-          console.log(`💾 Auto-saved ${combined.length} events to storage (batch)`);
         } catch (error) {
           console.error('❌ Failed to auto-save cache (batch):', error);
         }
@@ -157,7 +146,6 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
     try {
       setCachedEvents([]);
       await storage.remove(STORAGE_KEYS.CACHE);
-      console.log('🗑️ Cache cleared');
     } catch (error) {
       console.error('❌ Failed to clear cache:', error);
     }
@@ -189,7 +177,6 @@ export function useCACache(maxCacheSize: number = 5000, expiryDays: number = 7):
       setCachedEvents(prev => {
         const cleaned = cleanExpiredCache(prev, expiryDays);
         if (cleaned.length !== prev.length) {
-          console.log(`🧹 Auto cleanup: ${prev.length} -> ${cleaned.length} events`);
           return cleaned;
         }
         return prev;

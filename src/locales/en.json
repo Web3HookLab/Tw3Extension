@@ -2,7 +2,6 @@
   "common": {
     "next": "Next",
     "previous": "Previous",
-    "cancel": "Cancel",
     "confirm": "Confirm",
     "save": "Save",
     "close": "Close",
@@ -11,6 +10,8 @@
     "refresh": "Refresh",
     "hour": "Hour",
     "minute": "Minute",
+    "minutes": "Minutes",
+    "seconds": "seconds",
     "page": "Page",
     "clear": "Clear",
     "edit": "Edit",
@@ -27,12 +28,17 @@
     "copy": "Copy",
     "copied": "Copied",
     "copyFailed": "Copy failed",
-    "retry": "Retry",
     "loadMore": "Load More",
     "cached": "Cached",
     "comingSoon": "Coming Soon",
     "subscriptionRequired": "This feature requires a subscription",
-    "custom": "Custom"
+    "custom": "Custom",
+    "unknownToken": "Unknown Token",
+    "address": "Address",
+    "error": "Error",
+    "retry": "Retry",
+    "cancel": "Cancel"
+
   },
   "userInfo": {
     "account": "Account",
@@ -470,10 +476,7 @@
     "quickSelect": "Quick Select",
     "lastHour": "Last Hour",
     "last6Hours": "Last 6 Hours",
-    "today": "Today",
-    "last24Hours": "Last 24 Hours",
     "totalMentions": "Total Mentions",
-    "changeRate": "Change Rate",
     "activeUsers": "Active Users",
     "minuteStats": "Minute Stats",
     "firstMentioned": "First Mentioned",
@@ -530,6 +533,90 @@
     "genuineDiscussion": "genuine discussion",
     "needsAttention": "needs attention",
     "possibleBotActivity": "possible bot activity"
+  },
+  "deletedTweetsLeaderboard": {
+    "title": "Deleted Tweets Leaderboard",
+    "description": "View user deleted tweets statistics ranking",
+    "timeRange": {
+      "today": "Today",
+      "7days": "7 Days",
+      "30days": "30 Days",
+      "all": "All Time"
+    },
+    "sortBy": {
+      "deleted_count": "Deleted Count",
+      "latest_delete": "Latest Delete"
+    },
+    "order": {
+      "desc": "Descending",
+      "asc": "Ascending"
+    },
+    "stats": {
+      "totalUsers": "Total Users",
+      "showing": "Showing",
+      "cacheTime": "Cache Time",
+      "minutesAgo": "minutes ago",
+      "hoursAgo": "hours ago",
+      "justNow": "just now"
+    },
+    "table": {
+      "rank": "Rank",
+      "user": "User",
+      "deletedCount": "Deleted",
+      "totalTweets": "Total Tweets",
+      "deleteRate": "Delete Rate",
+      "latestDelete": "Latest Delete"
+    },
+    "filters": {
+      "timeRange": "Time Range",
+      "sortBy": "Sort By",
+      "order": "Sort Order",
+      "pageSize": "Page Size",
+      "search": "Search Users",
+      "searchPlaceholder": "Search username or display name...",
+      "searchHint": "Search cached data by username (@username) or display name",
+      "clearSearch": "Clear Search"
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "export": "Export"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "loadingMore": "Loading more...",
+      "noData": "No data available",
+      "loadFailed": "Load failed",
+      "refreshSuccess": "Refresh successful",
+      "exportSuccess": "Export successful",
+      "loadMoreFailed": "Failed to load more data",
+      "dataRefreshed": "Data refreshed"
+    },
+    "loadMore": {
+      "showing": "Showing",
+      "of": " / ",
+      "items": " items",
+      "loadMore": "Load More",
+      "loading": "Loading...",
+      "noMoreData": "No more data",
+      "allDataShown": "All data shown",
+      "scrollHint": "Click \"Load More\" or scroll down to view more data"
+    },
+    "search": {
+      "searchLabel": "Search:",
+      "noResults": "No deleted tweets data found for current filters. Please try adjusting the filters or refresh the data."
+    },
+    "time": {
+      "justNow": "just now",
+      "minutesAgo": " minutes ago",
+      "hoursAgo": " hours ago",
+      "daysAgo": " days ago"
+    },
+    "userActions": {
+      "copyUsername": "Copy username",
+      "copyFailed": "Copy failed",
+      "usernameCopied": "Username copied",
+      "visitProfile": "Visit Twitter profile"
+    }
   },
   "about": {
     "subtitle": "Twitter Web3 Data Tracking Extension",
@@ -785,6 +872,12 @@
     "seconds": "seconds",
     "trendsCount": "Trends Display Count",
     "items": "items",
+    "caSearchAutoUpdate": {
+      "title": "CA Search Auto Update Interval",
+      "description": "Set the auto-update frequency for CA address search results, 0 means disable auto-update",
+      "disabled": "Disable Auto Update",
+      "recommended": "Recommended"
+    },
     "refreshTwitterNotes": "Refresh Twitter Notes",
     "refreshWalletNotes": "Refresh Wallet Notes",
     "refreshTwitterNotesDesc": "Re-fetch the latest Twitter notes data",
@@ -917,6 +1010,7 @@
       "clear": "Clear",
       "pause": "Pause",
       "resume": "Resume",
+      "paused": "Paused",
       "filters": "Filters",
       "pauseTooltip": "Pause data rendering",
       "resumeTooltip": "Resume data rendering"
@@ -1057,6 +1151,9 @@
       "firstMention": "🥇 First",
       "latestMention": "🕐 Latest",
       "chart": "📊 Chart",
+      "tweetAnalysis": "Token Social Trend Chart",
+      "tweetAnalysisButton": "Analyze Now",
+      "klineAnalysisLabel": "K-Line Analysis",
       "copyTokenAddress": "Click to copy token address",
       "firstLaunch": "First Launch",
       "times": " times"
@@ -1095,6 +1192,190 @@
       "waitingData": "Waiting for CA event data...",
       "realtime": "Realtime",
       "dataCount": "{count} items"
+    }
+  },
+  "klineAnalysis": {
+    "title": "Token Social Trend Chart",
+    "description": "Analyze the impact of token-related tweets on price",
+    "loading": "Loading analysis data...",
+    "error": "Failed to load analysis data",
+    "retry": "Retry",
+    "priceChart": "Price Chart",
+    "dataSource": "Data source",
+    "tweetEvents": "Tweet events",
+    "chartDescription": "Chart shows the top 10 most impactful events •",
+    "firstMentionUser": "First Mention User",
+    "topUsers": "Top Users",
+    "topUsersCount": "Top",
+    "usersUnit": "",
+    "tweets": "tweets",
+    "followers": "followers",
+    "noKlineData": "Unable to get K-line data",
+    "noKlineDataDescription": "Could not retrieve price data for this token from GeckoTerminal, Pump.fun or Raydium",
+    "noTweetData": "No tweet data available",
+    "noTweetDataDescription": "No relevant tweet data found for this address",
+    "eventImpactAnalysis": "Event Impact Analysis",
+    "noEventData": "No tweet event data available",
+    "timeParseError": "Time parsing failed",
+    "invalidBasePrice": "Invalid base price",
+    "close": "Close",
+    "statistics": "Statistics",
+    "totalTweets": "Total Tweets",
+    "activeTweets": "Active Tweets",
+    "deletedTweets": "Deleted",
+    "analysisEvents": "Analysis Events",
+    "mostActiveDate": "Most Active Date",
+    "tweetsCount": "tweets",
+    "hotUsers": "Hot Users",
+    "klineArea": "K-line Chart Area",
+    "eventImpactAnalysisArea": "Event Impact Analysis",
+    "noDataPrompt": "No Data Available",
+    "permissionError": "This feature is only available to premium users, not available on free plan",
+    "dataFetchError": "Failed to fetch data",
+    "chainSelector": {
+      "title": "Select Network",
+      "chainsAvailable": " networks",
+      "currentNetwork": "Current Network",
+      "dataPoints": " data points",
+      "switchingChain": "Switching network...",
+      "switchChainError": "Failed to switch network",
+      "noDataOnChain": "No data available on this network"
+    },
+    "impactMultiple": "Impact Multiple",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "chartTitle": "15-Minute K-Line Chart",
+    "professionalAnalysis": "Professional Crypto Analysis",
+    "timeLabel": "Time",
+    "dataRangeLabel": "Data Range",
+    "dataPoints": "points",
+    "hours": "h",
+    "followers": "followers",
+    "baseline": "Baseline",
+    "peak": "Peak",
+    "clickToViewTweet": "Click to view tweet details"
+  },
+  "addressSearch": {
+    "title": "CA Address Search",
+    "description": "Search for tweet information related to Solana and Ethereum addresses",
+    "placeholder": "Enter Solana or Ethereum address...",
+    "search": "Search",
+    "searching": "Searching...",
+    "clear": "Clear",
+    "retry": "Retry",
+    "paste": "Paste",
+    "copy": "Copy",
+    "supportedFormats": "Supports Solana and Ethereum address formats",
+    "validFormat": "Valid {type} address detected",
+    "permissionRequired": "This feature is only available to premium users, free users cannot access it",
+    "upgrade": "Upgrade Now",
+    "stats": {
+      "title": "Statistics",
+      "totalTweets": "Total Tweets",
+      "activeTweets": "Active Tweets",
+      "deletedTweets": "Deleted Tweets",
+      "mostActiveDate": "Most Active Date",
+      "tweets": "tweets",
+      "activityLevel": "Activity Level",
+      "veryActive": "Very Active",
+      "active": "Active",
+      "moderate": "Moderate",
+      "low": "Low",
+      "veryLow": "Very Low"
+    },
+    "topUsers": {
+      "title": "Top Users",
+      "noData": "No data available",
+      "topContributor": "Top Contributor",
+      "followers": "followers",
+      "tweets": "tweets",
+      "rankingNote": "Ranked by tweet count, showing top 3 most active users"
+    },
+    "tweets": {
+      "title": "Related Tweets",
+      "noData": "No tweet data available",
+      "followers": "followers",
+      "daysAgo": "d ago",
+      "hoursAgo": "h ago",
+      "justNow": "just now",
+      "loadMore": "Load More",
+      "remaining": "remaining",
+      "description": "Click on tweets to view details in a new window",
+      "status": {
+        "active": "Active",
+        "deleted": "Deleted"
+      }
+    },
+    "results": {
+      "idle": {
+        "title": "Start Searching CA Addresses",
+        "description": "Enter a Solana or Ethereum address to view related tweet information and statistics"
+      },
+      "noData": {
+        "title": "No Related Data Found",
+        "description": "No related tweet records found for this address, please try searching other addresses"
+      },
+      "searchedAddress": "Searched Address",
+      "network": "Network"
+    },
+    "history": {
+      "title": "Search History",
+      "recent": "Recent Searches",
+      "empty": "No search history",
+      "clear": "Clear History"
+    },
+    "info": {
+      "title": "Feature Description",
+      "feature1": "Support Solana and Ethereum address search",
+      "feature2": "Display address-related tweet statistics and top users",
+      "feature3": "Automatically save search history for quick access",
+      "feature4": "Real-time data updates to ensure information accuracy"
+    },
+    "refreshNow": "Refresh Now",
+    "autoUpdateIn": "Auto update in",
+    "autoUpdateMinute": "minute(s)",
+    "autoUpdateSeconds": "second(s)",
+    "tokenInfo": {
+      "title": "Token Information",
+      "address": "Token Address",
+      "description": "Token Description",
+      "website": "Website",
+      "twitter": "Twitter",
+      "copyAddress": "Copy Address",
+      "copyAddressTooltip": "Copy token address to clipboard",
+      "searchOnTwitter": "Search on Twitter",
+      "searchOnTwitterTooltip": "Search this token address on Twitter",
+      "klineAnalysis": "Token Social Trend Chart",
+      "klineAnalysisTooltip": "View token price trends and tweet event correlation analysis",
+      "externalLinks": "External Links"
+    },
+    "firstMention": {
+      "title": "First Mention",
+      "pioneer": "Pioneer",
+      "noData": "No first mention user",
+      "followers": "followers",
+      "tweets": "tweets",
+      "first": "First",
+      "earliestMention": "Earliest mention",
+      "description": "The first user to mention this address"
+    },
+    "disclaimer": "Data may not be comprehensive. For reference only, not investment advice",
+    "address": {
+      "error": {
+        "empty": "Please enter an address",
+        "unknownFormat": "Unrecognized address format",
+        "invalid": "Invalid address format",
+        "ethereum": {
+          "noPrefix": "Ethereum address must start with 0x",
+          "invalidLength": "Ethereum address must be 42 characters long",
+          "invalidFormat": "Invalid Ethereum address format"
+        },
+        "solana": {
+          "tooShort": "Solana address is too short",
+          "tooLong": "Solana address is too long",
+          "invalidFormat": "Invalid Solana address format"
+        }
+      }
     }
   }
 }

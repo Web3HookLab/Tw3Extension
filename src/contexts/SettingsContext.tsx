@@ -12,7 +12,7 @@ export interface SettingsContextProps {
   setLanguage: (lang: Language) => Promise<void>;
   t: (key: string) => string;
   languageLoading: boolean;
-  
+
   // 其他设置
   theme: string;
   setTheme: (theme: string) => void;
@@ -20,6 +20,9 @@ export interface SettingsContextProps {
   setTrendsCount: (n: number) => void;
   autoRefreshInterval: number;
   setAutoRefreshInterval: (n: number) => void;
+  // CA搜索自动更新间隔
+  caSearchAutoUpdateInterval: number;
+  setCaSearchAutoUpdateInterval: (n: number) => void;
 }
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
@@ -32,6 +35,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [theme, setThemeState] = useState('system');
   const [trendsCount, setTrendsCountState] = useState(20);
   const [autoRefreshInterval, setAutoRefreshIntervalState] = useState(15);
+  const [caSearchAutoUpdateInterval, setCaSearchAutoUpdateIntervalState] = useState(60);
 
   // 初始化其他设置
   useEffect(() => {
@@ -42,17 +46,20 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         const th = await storage.get('theme');
         const tc = await storage.get('trends_count');
         const ari = await storage.get('auto_refresh_interval');
+        const casaui = await storage.get('ca_search_auto_update_interval');
         
-        console.log('📦 存储中的其他设置:', { th, tc, ari });
-        
+        console.log('📦 存储中的其他设置:', { th, tc, ari, casaui });
+
         // 设置默认值并保存到存储
         const finalTheme = th || 'system';
         const finalTrendsCount = typeof tc === 'number' ? tc : 20;
         const finalAutoRefresh = typeof ari === 'number' ? ari : 15;
+        const finalCaSearchAutoUpdate = typeof casaui === 'number' ? casaui : 60;
         
         setThemeState(finalTheme);
         setTrendsCountState(finalTrendsCount);
         setAutoRefreshIntervalState(finalAutoRefresh);
+        setCaSearchAutoUpdateIntervalState(finalCaSearchAutoUpdate);
         
         // 保存默认值到存储
         if (!th) {
@@ -66,6 +73,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         if (typeof ari !== 'number') {
           console.log('💾 保存默认自动刷新间隔:', finalAutoRefresh);
           storage.set('auto_refresh_interval', finalAutoRefresh);
+        }
+        if (typeof casaui !== 'number') {
+          console.log('💾 保存默认CA搜索自动更新间隔:', finalCaSearchAutoUpdate);
+          storage.set('ca_search_auto_update_interval', finalCaSearchAutoUpdate);
         }
         
         console.log('✅ SettingsContext: 其他设置初始化完成');
@@ -94,6 +105,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     storage.set('auto_refresh_interval', n);
   };
 
+  const setCaSearchAutoUpdateInterval = (n: number) => {
+    console.log('💾 保存CA搜索自动更新间隔:', n);
+    setCaSearchAutoUpdateIntervalState(n);
+    storage.set('ca_search_auto_update_interval', n);
+  };
+
   // 组合模式：将语言管理器的功能暴露给上层
   const contextValue: SettingsContextProps = {
     // 语言管理（来自 languageManager）
@@ -108,7 +125,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     trendsCount,
     setTrendsCount,
     autoRefreshInterval,
-    setAutoRefreshInterval
+    setAutoRefreshInterval,
+    caSearchAutoUpdateInterval,
+    setCaSearchAutoUpdateInterval
   };
 
   return (

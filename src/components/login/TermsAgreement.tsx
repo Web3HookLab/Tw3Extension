@@ -327,7 +327,7 @@ function TermsAgreement({ onNext, onPrev, onTermsAccept, termsAccepted = false }
               <div className="bg-muted/50 rounded-lg p-4 mt-6">
                 <p className="text-xs text-muted-foreground">
                   {t('login.lastUpdated')}: {new Date().toLocaleDateString()}<br />
-                  {t('login.versionInfo')}: 2.0.0
+                  {t('login.versionInfo')}: 2.1.0
                 </p>
               </div>
 

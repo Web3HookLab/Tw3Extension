@@ -22,6 +22,12 @@ interface RealtimeCAListProps {
   connectionStatus: ConnectionStatus;
   loading?: boolean;
   error?: string | null;
+  onOpenAnalysis?: (tokenData: {
+    tokenAddress: string;
+    tokenSymbol: string;
+    tokenName: string;
+    networkType: string;
+  }) => void;
 }
 
 export function RealtimeCAList({
@@ -29,7 +35,8 @@ export function RealtimeCAList({
   viewMode,
   connectionStatus,
   loading = false,
-  error = null
+  error = null,
+  onOpenAnalysis
 }: RealtimeCAListProps) {
   const { t } = useSettings();
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -162,15 +169,21 @@ export function RealtimeCAList({
         <>
           <ScrollArea className="h-[600px]">
             <div className="space-y-1 p-1">
-              {displayEvents.map((event, index) => (
-                <RealtimeCAItem
-                  key={event.id}
-                  event={event}
-                  index={index}
-                  isExpanded={expandedItems.has(event.id)}
-                  onToggleExpanded={() => toggleExpanded(event.id)}
-                />
-              ))}
+              {displayEvents.map((event, index) => {
+                // 使用更稳定的key策略：用户ID + 推文ID + 代币地址组合
+                const stableKey = `${event.data.user.rest_id}-${event.data.tweet.tweet_id}-${event.data.mentions?.[0]?.address || 'no-token'}`;
+
+                return (
+                  <RealtimeCAItem
+                    key={stableKey}
+                    event={event}
+                    index={index}
+                    isExpanded={expandedItems.has(event.id)}
+                    onToggleExpanded={() => toggleExpanded(event.id)}
+                    onOpenAnalysis={onOpenAnalysis}
+                  />
+                );
+              })}
             </div>
           </ScrollArea>
 

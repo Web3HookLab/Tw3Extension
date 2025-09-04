@@ -204,8 +204,58 @@ bun run build
 - 改进卡片布局，提供更好的数据展示
 - 在整个应用中添加加载状态和错误处理
 
+### v2.1.0 - 2025.09.04
+
+#### English
+**🚀 Major Features**
+- Added CA Address Search functionality with support for Ethereum and Solana addresses
+- Added Social K-line Analysis for tokens with Twitter sentiment integration
+- Added Multi-chain K-line switching support (Ethereum, BSC, Base, Arbitrum, Optimism, Avalanche, X Layer)
+- Added Deleted Tweet Leaderboard to track removed tweets and user activities
+- Added comprehensive Twitter user interaction features (click to view profiles and tweets)
+
+**🐛 Bug Fixes & Improvements**
+- Fixed WebSocket connection stability issues and error handling
+- Fixed address format detection and case sensitivity issues (ETH addresses now properly lowercase)
+- Fixed network badge display issues for Solana addresses
+- Fixed chain selector button styling (no longer turns black when clicked)
+- Fixed multi-language support throughout the application
+- Improved API request handling and error recovery
+
+**🎨 UI/UX Enhancements**
+- Enhanced CA search interface with better address validation
+- Improved K-line chart visualization with professional trading indicators
+- Added network badges and chain switching interface
+- Enhanced timeline cards with clickable user profiles and tweet links
+- Improved hover effects and visual feedback across all components
+- Added loading states and error messages for better user experience
+
+#### 中文
+**🚀 主要功能**
+- 添加CA地址搜索功能，支持以太坊和Solana地址
+- 添加代币社交K线分析，集成Twitter情绪数据
+- 添加多链K线切换支持（以太坊、BSC、Base、Arbitrum、Optimism、Avalanche、X Layer）
+- 添加删帖榜单，追踪被删除的推文和用户活动
+- 添加完整的Twitter用户交互功能（点击查看用户资料和推文）
+
+**🐛 错误修复与改进**
+- 修复WebSocket连接稳定性问题和错误处理
+- 修复地址格式检测和大小写敏感问题（ETH地址现在正确转为小写）
+- 修复Solana地址的网络徽章显示问题
+- 修复链选择器按钮样式（点击后不再变黑）
+- 修复整个应用的多语言支持
+- 改进API请求处理和错误恢复
+
+**🎨 界面/体验优化**
+- 增强CA搜索界面，改进地址验证
+- 改进K线图表可视化，添加专业交易指标
+- 添加网络徽章和链切换界面
+- 增强时间线卡片，支持点击用户资料和推文链接
+- 改进所有组件的悬停效果和视觉反馈
+- 添加加载状态和错误消息，提升用户体验
+
 ---
 
-**Version**: 2.0.0
+**Version**: 2.1.0
 **Author**: Web3Hook
-**Last Updated**: 2025.08.24
+**Last Updated**: 2025.09.04

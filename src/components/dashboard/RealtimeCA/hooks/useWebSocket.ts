@@ -2,31 +2,37 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { TokenManager } from "~src/services/token.service";
 import { WS_CONFIG, WS_MESSAGE_TYPES } from '../constants';
 import { validateCAEvent } from '../utils';
-import type { 
-  ConnectionStatus, 
-  CAEvent, 
+import type {
+  ConnectionStatus,
+  CAEvent,
   RealtimeCASettings,
   SubscriptionConfig,
-  WebSocketMessage 
+  WebSocketMessage
 } from '~src/types/realtime-ca.types';
+
+// 全局WebSocket连接管理
+let globalWebSocketInstance: WebSocket | null = null;
+let activeHookCount = 0;
+let currentActivePageHook: string | null = null;
 
 interface UseWebSocketOptions {
   onMessage: (event: CAEvent) => void;
   settings: RealtimeCASettings;
+  isPageActive?: boolean; // 新增：页面是否活跃
 }
 
 interface UseWebSocketReturn {
   connectionStatus: ConnectionStatus;
   isConnected: boolean;
   connect: () => void;
-  disconnect: () => void;
+  disconnect: (isPageSwitch?: boolean) => void;
   subscribe: (config?: SubscriptionConfig) => void;
   unsubscribe: () => void;
   updateSubscription: (config: SubscriptionConfig) => void;
   reconnectAttempts: number;
 }
 
-export function useWebSocket({ onMessage, settings }: UseWebSocketOptions): UseWebSocketReturn {
+export function useWebSocket({ onMessage, settings, isPageActive = true }: UseWebSocketOptions): UseWebSocketReturn {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('disconnected');
   const [reconnectAttempts, setReconnectAttempts] = useState(0);
 
@@ -36,8 +42,56 @@ export function useWebSocket({ onMessage, settings }: UseWebSocketOptions): UseW
   const heartbeatTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isManualDisconnectRef = useRef(false);
   const connectFnRef = useRef<((forceConnect?: boolean) => Promise<void>) | null>(null);
+  const wasConnectedBeforeInactiveRef = useRef(false); // 记录页面不活跃前的连接状态
+  const hookIdRef = useRef<string>(Math.random().toString(36).substr(2, 9)); // 唯一hook标识
 
   const isConnected = connectionStatus === 'connected';
+
+  // 注册/注销hook
+  useEffect(() => {
+    activeHookCount++;
+    console.log('🔗 WebSocket hook mounted:', { hookId: hookIdRef.current, activeCount: activeHookCount, isPageActive });
+
+    if (isPageActive) {
+      currentActivePageHook = hookIdRef.current;
+      console.log('🎯 Active page hook set:', hookIdRef.current);
+    }
+
+    return () => {
+      activeHookCount--;
+      console.log('🔗 WebSocket hook unmounted:', { hookId: hookIdRef.current, activeCount: activeHookCount });
+
+      if (currentActivePageHook === hookIdRef.current) {
+        currentActivePageHook = null;
+        console.log('🎯 Active page hook cleared');
+      }
+
+      // 清理当前Hook的定时器
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+        console.log('🧹 Cleared reconnection timer for unmounted hook');
+      }
+
+      // 如果是最后一个hook，清理全局连接
+      if (activeHookCount === 0 && globalWebSocketInstance) {
+        console.log('🧹 Cleaning up global WebSocket connection');
+        globalWebSocketInstance.close();
+        globalWebSocketInstance = null;
+      }
+    };
+  }, []);
+
+  // 更新活跃页面hook
+  useEffect(() => {
+    if (isPageActive) {
+      currentActivePageHook = hookIdRef.current;
+      console.log('🎯 Active page hook updated:', hookIdRef.current);
+    } else if (currentActivePageHook === hookIdRef.current) {
+      currentActivePageHook = null;
+      console.log('🎯 Active page hook cleared due to inactive');
+    }
+  }, [isPageActive]);
 
   // 移除所有模拟数据相关代码
   
@@ -145,6 +199,13 @@ export function useWebSocket({ onMessage, settings }: UseWebSocketOptions): UseW
   // 重连逻辑
   const attemptReconnect = useCallback(() => {
     if (!settings.autoRetry || isManualDisconnectRef.current) {
+      console.log('🚫 Reconnection blocked:', { autoRetry: settings.autoRetry, manualDisconnect: isManualDisconnectRef.current });
+      return;
+    }
+
+    // 新增：如果页面不活跃，不进行重连
+    if (!isPageActive) {
+      console.log('🚫 Reconnection blocked: page inactive');
       return;
     }
 
@@ -164,15 +225,38 @@ export function useWebSocket({ onMessage, settings }: UseWebSocketOptions): UseW
 
     reconnectTimeoutRef.current = setTimeout(() => {
       setReconnectAttempts(prev => prev + 1);
-      // 使用ref避免循环依赖
-      if (connectFnRef.current) {
+      // 再次检查页面是否活跃和Hook是否还是活跃的
+      if (isPageActive && currentActivePageHook === hookIdRef.current && connectFnRef.current) {
         connectFnRef.current(false);
+      } else {
+        console.log('🚫 Reconnection cancelled:', {
+          isPageActive,
+          isActiveHook: currentActivePageHook === hookIdRef.current,
+          currentHook: hookIdRef.current,
+          activeHook: currentActivePageHook
+        });
+        setConnectionStatus('disconnected');
       }
     }, delay);
-  }, [settings.autoRetry, reconnectAttempts]);
+  }, [settings.autoRetry, reconnectAttempts, isPageActive]);
   
   // 连接WebSocket的实现
   const connect = useCallback(async (forceConnect = false) => {
+    // 只有活跃页面的hook可以创建连接
+    if (currentActivePageHook !== hookIdRef.current) {
+      console.log('🚫 Connection blocked: not active page hook', {
+        currentHook: hookIdRef.current,
+        activeHook: currentActivePageHook
+      });
+      return;
+    }
+
+    // 如果是强制连接，重置手动断开标记
+    if (forceConnect) {
+      console.log('🔄 Force connect: resetting manual disconnect flag');
+      isManualDisconnectRef.current = false;
+    }
+
     // 如果是手动断开状态，且不是强制连接，则拒绝连接
     if (isManualDisconnectRef.current && !forceConnect) {
       console.log('🚫 Connection blocked: manual disconnect active');
@@ -277,20 +361,30 @@ export function useWebSocket({ onMessage, settings }: UseWebSocketOptions): UseW
   }, [connect]);
 
   // 断开连接 (仅处理真实WebSocket)
-  const disconnect = useCallback(() => {
-    isManualDisconnectRef.current = true;
+  const disconnect = useCallback((isPageSwitch = false) => {
+    console.log('🔌 Disconnecting WebSocket...', isPageSwitch ? '(page switch)' : '(manual)');
+
+    if (isPageSwitch) {
+      // 页面切换导致的断开，记录之前的连接状态，但不标记为手动断开
+      wasConnectedBeforeInactiveRef.current = isConnected;
+    } else {
+      // 手动断开
+      isManualDisconnectRef.current = true;
+      wasConnectedBeforeInactiveRef.current = false;
+    }
+
     clearTimers();
 
     // 关闭真实WebSocket连接
     if (wsRef.current) {
-      wsRef.current.close(1000, 'Manual disconnect');
+      wsRef.current.close(1000, isPageSwitch ? 'Page switch' : 'Manual disconnect');
       wsRef.current = null;
     }
 
     setConnectionStatus('disconnected');
     setReconnectAttempts(0);
     console.log('🔌 WebSocket disconnected');
-  }, [clearTimers]);
+  }, [clearTimers, isConnected]);
   
   // 订阅CA事件 (仅真实WebSocket)
   const subscribe = useCallback((config?: SubscriptionConfig) => {
@@ -325,6 +419,45 @@ export function useWebSocket({ onMessage, settings }: UseWebSocketOptions): UseW
       console.warn('⚠️ Cannot update subscription: WebSocket not connected');
     }
   }, [isConnected, subscribe]);
+
+  // 页面活跃状态监听
+  useEffect(() => {
+    console.log('🔄 Page activity changed:', {
+      isPageActive,
+      isConnected,
+      wasConnectedBefore: wasConnectedBeforeInactiveRef.current,
+      isManualDisconnect: isManualDisconnectRef.current
+    });
+
+    if (!isPageActive) {
+      // 页面变为不活跃，断开连接并清除重连定时器
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+        console.log('🚫 Cleared reconnection timer due to page inactive');
+      }
+
+      if (isConnected) {
+        console.log('📱 Page inactive, disconnecting WebSocket...');
+        disconnect(true); // 传递true表示是页面切换导致的断开
+      } else {
+        console.log('📱 Page inactive, but WebSocket already disconnected');
+      }
+    } else {
+      // 页面变为活跃，根据之前状态决定是否重连
+      if (wasConnectedBeforeInactiveRef.current && !isConnected && !isManualDisconnectRef.current) {
+        console.log('📱 Page active, reconnecting WebSocket...');
+        connect(true); // 强制连接
+        wasConnectedBeforeInactiveRef.current = false; // 重置状态
+      } else {
+        console.log('📱 Page active, but no reconnection needed:', {
+          wasConnectedBefore: wasConnectedBeforeInactiveRef.current,
+          isConnected,
+          isManualDisconnect: isManualDisconnectRef.current
+        });
+      }
+    }
+  }, [isPageActive, isConnected, disconnect, connect]);
 
   // 清理资源
   useEffect(() => {
